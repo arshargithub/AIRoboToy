@@ -1,44 +1,25 @@
-certifi==2025.11.12
-cffi==2.0.0
-charset-normalizer==3.4.4
-coloredlogs==15.0.1
-diskcache==5.6.3
-filelock==3.20.0
-flatbuffers==25.9.23
-fsspec==2025.10.0
-humanfriendly==10.0
-idna==3.11
-Jinja2==3.1.6
-joblib==1.5.2
-llama_cpp_python==0.3.16
-MarkupSafe==3.0.3
-mpmath==1.3.0
-networkx==2.8.8
-numpy==1.26.4
-onnxruntime==1.23.2
-openai==2.8.1
-packaging==25.0
-protobuf==6.33.1
-pycparser==2.23
-requests==2.32.5
-scikit-learn==1.7.2
-scipy==1.16.3
-setuptools==80.9.0
-silero-vad==6.2.0
-sounddevice==0.5.3
-sympy==1.14.0
-threadpoolctl==3.6.0
-torch==2.9.1
-torchaudio==2.9.1
-tqdm==4.67.1
-typing-extensions==4.15.0
-urllib3==2.5.0
-pydub==0.25.1
-PyYAML==6.0.3
+# Core dependencies for Local VAD + OpenAI Realtime API pipeline
+
+# Audio processing
+sounddevice>=0.5.3
+numpy>=1.26.0
+
+# Voice Activity Detection (local VAD)
+torch>=2.0.0
+torchaudio>=0.12.0  # Required by silero-vad
+# Note: onnxruntime>=1.16.0 is required by silero-vad but not available for Python 3.14 yet
+# The VAD may still work using PyTorch models. If you encounter issues, consider using Python 3.11 or 3.12
+silero-vad>=6.2.0
+
+# OpenAI Realtime API
+openai>=2.8.0
+websocket-client>=1.6.0
+scipy>=1.16.0  # For audio resampling (16kHz -> 24kHz)
+
+# Configuration
+PyYAML>=6.0.0
 python-dotenv>=1.0.0
-TTS==0.22.0
-openai-whisper>=20231117
-pydantic>=2.0.0
+
+# Web UI
 Flask>=3.0.0
 flask-socketio>=5.3.0
-websocket-client>=1.6.0

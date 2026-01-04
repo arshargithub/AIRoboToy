@@ -25,37 +25,26 @@ def load_config(config_file="config/settings.yaml"):
     return config
 
 def get_default_config():
-    """Return default configuration."""
+    """Return default configuration for Local VAD + OpenAI Realtime API pipeline."""
     return {
-        "offline_mode": {
-            "enabled": False,
-            "auto_detect": True
+        "audio": {
+            "sample_rate": 16000,
+            "chunk_size": 512
         },
-        "tts": {
-            "openai": {
-                "voice": "alloy",
-                "model": "tts-1"
-            },
-            "coqui": {
-                "model_dir": "models/tts/coqui_model"
-            }
+        "vad": {
+            "speech_threshold": 0.5
         },
-        "llm": {
-            "openai": {
-                "model": "gpt-4o-mini",
-                "max_tokens": 400
-            },
-            "local": {
-                "model_path": "models/llm/phi-3-mini-4k-instruct-q4.gguf",
-                "wake_max_tokens": 80,
-                "response_max_tokens": 200,
-                "n_threads": 4,
-                "n_ctx": 2048
-            }
+        "realtime": {
+            "voice": "alloy",
+            "model": "gpt-4o-realtime-preview-2024-12-17"
         },
-        "asr": {
-            "model_name": "base.en",
-            "sample_rate": 16000
+        "conversation": {
+            "session_timeout_seconds": 60
+        },
+        "ui": {
+            "enabled": True,
+            "port": 5000,
+            "auto_open_browser": True
         }
     }
 
