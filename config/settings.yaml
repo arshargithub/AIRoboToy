@@ -1,0 +1,27 @@
+# Robot Toy Configuration
+# Local VAD + OpenAI Realtime API Pipeline
+
+# Audio Settings
+audio:
+  sample_rate: 16000  # Microphone sample rate
+  chunk_size: 512  # Audio chunk size for processing
+
+# VAD Settings (Local Voice Activity Detection - cost gate)
+vad:
+  speech_threshold: 0.5  # VAD confidence threshold (0.0-1.0), higher = more strict
+
+# Realtime API Settings
+realtime:
+  voice: "alloy"  # Options: alloy, echo, fable, onyx, nova, shimmer
+  model: "gpt-4o-realtime-preview-2024-12-17"  # Realtime API model
+
+# Conversation Session Settings
+conversation:
+  session_timeout_seconds: 60  # End active session if no interaction for this many seconds
+
+# UI Settings
+ui:
+  enabled: true  # Enable robot web UI
+  port: 5000  # Port for web interface
+  auto_open_browser: true  # Automatically open browser when starting
+
