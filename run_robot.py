@@ -152,6 +152,13 @@ class RealtimePipeline:
             audio_size = len(event.get("delta", "")) if event.get("delta") else 0
             logger.debug(f"EVENT: response.audio.delta - received {audio_size} bytes of audio")
             
+            # IMMEDIATE TRANSITION: Switch to TALKING as soon as we get ANY audio data
+            if not self.playing_response and audio_size > 0:
+                logger.info("STATE: THINKING → TALKING (audio response started)")
+                self.state_manager.set_state(RobotState.TALKING)
+                if self.ui_enabled:
+                    self.web_ui_server.emit_state_update(RobotState.TALKING)
+            
             # The audio chunk is already queued by _handle_event before this handler runs
             if not self.playing_response:
                 # Stop any previous playback
@@ -180,10 +187,6 @@ class RealtimePipeline:
                 
                 # Start playing response (the current chunk is already in the queue)
                 self.playing_response = True
-                logger.info("STATE: THINKING → TALKING (first audio chunk received)")
-                self.state_manager.set_state(RobotState.TALKING)
-                if self.ui_enabled:
-                    self.web_ui_server.emit_state_update(RobotState.TALKING)
                 
                 # Start new response playback thread
                 logger.info("Starting audio playback thread...")
@@ -231,16 +234,12 @@ class RealtimePipeline:
             
             self.last_interaction_time = time.time()
             
-            # Only transition to LISTENING if we're actually done playing
-            # If there's still audio in the queue, stay in TALKING until it's drained
-            if self.realtime_session_active:
-                if status == "cancelled" or queue_size == 0:
-                    logger.info("STATE: TALKING → LISTENING (response complete)")
-                    self.state_manager.set_state(RobotState.LISTENING)
-                    if self.ui_enabled:
-                        self.web_ui_server.emit_state_update(RobotState.LISTENING)
-                else:
-                    logger.info(f"Response done but {queue_size} chunks still queued - staying in TALKING")
+            # Let the audio playback thread handle state transitions
+            # This prevents conflicting state changes
+            if status == "cancelled":
+                logger.info("Response cancelled - audio thread will handle state transition")
+            else:
+                logger.info(f"Response completed - audio thread will transition back when playback finishes")
         
         def on_conversation_end(event):
             """Conversation ended - close session and return to READY."""
@@ -263,7 +262,7 @@ class RealtimePipeline:
         total_bytes = 0
         chunks_received = 0
         empty_count = 0
-        max_empty_count = 200  # Wait longer for audio chunks (2 seconds)
+        max_empty_count = 20   # Ultra-short timeout for instant responsiveness (0.1 seconds)
         
         # Use a single continuous stream for smoother playback
         import sounddevice as sd
@@ -321,16 +320,18 @@ class RealtimePipeline:
                     if queue_size > 0 and empty_count > 5:
                         logger.warning(f"Queue has {queue_size} chunks but get_response_audio() returned None! This shouldn't happen.")
                     
-                    # Only exit if:
-                    # 1. Response is done AND
-                    # 2. Queue is empty AND  
-                    # 3. We've waited long enough
-                    if not self.playing_response and queue_size == 0 and empty_count >= 100:
-                        logger.info(f"Response done, queue empty, waited {empty_count} reads - exiting")
+                    # INSTANT EXIT: As soon as response is done and queue is empty, exit immediately
+                    if not self.playing_response and queue_size == 0:
+                        logger.info(f"Response done, queue empty - exiting INSTANTLY (zero delay)")
                         break
                     
-                    # Small delay when no audio available
-                    time.sleep(0.01)
+                    # Ultra-fast fallback: If response is done, wait max 2 reads (20ms) then exit
+                    if not self.playing_response and empty_count >= 2:
+                        logger.info(f"Response done, waited {empty_count} reads - exiting ultra-fast")
+                        break
+                    
+                    # Shorter delay for faster responsiveness
+                    time.sleep(0.005)  # 5ms instead of 10ms
             
         except Exception as e:
             logger.error(f"Error in audio playback thread: {e}", exc_info=True)
