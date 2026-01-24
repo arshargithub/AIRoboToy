@@ -30,6 +30,7 @@ wheels/
 
 # IDE
 .vscode/
+.cursor/
 .idea/
 *.swp
 *.swo
@@ -54,4 +55,8 @@ models/**/*.pt
 .env
 .env.local
 .env.*.local
+
+# Node.js (not used in this Python project)
+package-lock.json
+node_modules/
 
