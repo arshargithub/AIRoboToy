@@ -325,9 +325,9 @@ class RealtimePipeline:
                         logger.info(f"Response done, queue empty - exiting INSTANTLY (zero delay)")
                         break
                     
-                    # Ultra-fast fallback: If response is done, wait max 2 reads (20ms) then exit
-                    if not self.playing_response and empty_count >= 2:
-                        logger.info(f"Response done, waited {empty_count} reads - exiting ultra-fast")
+                    # Conservative fallback: If response is done, wait a bit longer to avoid truncation
+                    if not self.playing_response and empty_count >= 10:  # 50ms instead of 20ms
+                        logger.info(f"Response done, waited {empty_count} reads - exiting conservatively")
                         break
                     
                     # Shorter delay for faster responsiveness

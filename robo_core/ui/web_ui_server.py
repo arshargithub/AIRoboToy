@@ -10,7 +10,7 @@ import time
 import logging
 import queue
 
-# Minimal HTML template for robot state - just text labels
+# Enhanced HTML template with retro animations
 ROBOT_UI_HTML = """
 <!DOCTYPE html>
 <html lang="en">
@@ -34,31 +34,220 @@ ROBOT_UI_HTML = """
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            overflow: hidden;
         }
         
         .container {
             text-align: center;
             padding: 40px;
+            position: relative;
         }
         
         .robot-name {
             font-size: 24px;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             color: #888888;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px #888888;
         }
         
         .state-label {
-            font-size: 48px;
+            font-size: 32px;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
         }
         
+        .animation-container {
+            position: relative;
+            width: 400px;
+            height: 200px;
+            margin: 0 auto;
+        }
+        
+        /* Listening Mode - Retro Signal Animation */
+        .listening-signal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border: 2px solid #0099ff;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .listening-signal.active {
+            opacity: 1;
+            animation: radarSweep 2s linear infinite;
+        }
+        
+        .listening-signal::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            border: 1px solid #0099ff;
+            border-radius: 50%;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        .listening-signal::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(0deg);
+            width: 90px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #0099ff, transparent);
+            animation: sweep 2s linear infinite;
+            transform-origin: 0 50%;
+        }
+        
+        .crosshairs {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            opacity: 0.6;
+        }
+        
+        .crosshairs::before,
+        .crosshairs::after {
+            content: '';
+            position: absolute;
+            background: #0099ff;
+            opacity: 0.3;
+        }
+        
+        .crosshairs::before {
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            transform: translateY(-50%);
+        }
+        
+        .crosshairs::after {
+            top: 0;
+            left: 50%;
+            width: 1px;
+            height: 100%;
+            transform: translateX(-50%);
+        }
+        
+        /* Talking Mode - Retro Soundwave Animation */
+        .soundwave-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .soundwave-container.active {
+            opacity: 1;
+        }
+        
+        .soundwave-bar {
+            width: 6px;
+            background: #00ff00;
+            border-radius: 3px;
+            animation: soundwave 0.8s ease-in-out infinite;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        
+        .soundwave-bar:nth-child(1) { height: 20px; animation-delay: 0s; }
+        .soundwave-bar:nth-child(2) { height: 40px; animation-delay: 0.1s; }
+        .soundwave-bar:nth-child(3) { height: 60px; animation-delay: 0.2s; }
+        .soundwave-bar:nth-child(4) { height: 80px; animation-delay: 0.3s; }
+        .soundwave-bar:nth-child(5) { height: 100px; animation-delay: 0.4s; }
+        .soundwave-bar:nth-child(6) { height: 120px; animation-delay: 0.5s; }
+        .soundwave-bar:nth-child(7) { height: 100px; animation-delay: 0.6s; }
+        .soundwave-bar:nth-child(8) { height: 80px; animation-delay: 0.7s; }
+        .soundwave-bar:nth-child(9) { height: 60px; animation-delay: 0.8s; }
+        .soundwave-bar:nth-child(10) { height: 40px; animation-delay: 0.9s; }
+        .soundwave-bar:nth-child(11) { height: 20px; animation-delay: 1s; }
+        
+        .spectrogram-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, 
+                transparent, 
+                #00ff00 20%, 
+                #ffff00 40%, 
+                #ff8800 60%, 
+                #ff0000 80%, 
+                transparent
+            );
+            animation: spectrogram 1.5s linear infinite;
+        }
+        
+        /* State-specific styling */
         .state-listening {
             color: #0099ff;
+            text-shadow: 0 0 20px #0099ff;
         }
         
         .state-talking {
             color: #00ff00;
+            text-shadow: 0 0 20px #00ff00;
+        }
+        
+        /* Keyframe animations */
+        @keyframes radarSweep {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.7; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.4; }
+        }
+        
+        @keyframes sweep {
+            0% { transform: translate(-50%, -50%) rotate(0deg); opacity: 1; }
+            90% { transform: translate(-50%, -50%) rotate(360deg); opacity: 1; }
+            100% { transform: translate(-50%, -50%) rotate(360deg); opacity: 0; }
+        }
+        
+        @keyframes soundwave {
+            0%, 100% { transform: scaleY(0.3); opacity: 0.8; }
+            50% { transform: scaleY(1); opacity: 1; }
+        }
+        
+        @keyframes spectrogram {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Glitch effect for transitions */
+        .transition-glitch {
+            animation: glitch 0.1s ease-in-out;
+        }
+        
+        @keyframes glitch {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-1px); }
+            75% { transform: translateX(1px); }
         }
     </style>
 </head>
@@ -66,6 +255,29 @@ ROBOT_UI_HTML = """
     <div class="container">
         <div class="robot-name">JOHNNY</div>
         <div class="state-label" id="stateLabel">LISTENING</div>
+        
+        <div class="animation-container">
+            <!-- Listening Animation -->
+            <div class="listening-signal active" id="listeningSignal">
+                <div class="crosshairs"></div>
+            </div>
+            
+            <!-- Talking Animation -->
+            <div class="soundwave-container" id="soundwaveContainer">
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="spectrogram-line"></div>
+            </div>
+        </div>
     </div>
     
     <script>
@@ -77,16 +289,31 @@ ROBOT_UI_HTML = """
         });
         
         const stateLabel = document.getElementById('stateLabel');
+        const listeningSignal = document.getElementById('listeningSignal');
+        const soundwaveContainer = document.getElementById('soundwaveContainer');
         
         function updateState(state) {
-            // Simple mapping: talking vs listening
+            // Add brief glitch effect during transition
+            stateLabel.classList.add('transition-glitch');
+            setTimeout(() => stateLabel.classList.remove('transition-glitch'), 100);
+            
             if (state === 'talking') {
+                // Switch to talking mode
                 stateLabel.textContent = 'TALKING';
                 stateLabel.className = 'state-label state-talking';
+                
+                // Show soundwave, hide listening signal
+                listeningSignal.classList.remove('active');
+                soundwaveContainer.classList.add('active');
+                
             } else {
                 // All other states (ready, listening, thinking) -> LISTENING
                 stateLabel.textContent = 'LISTENING';
                 stateLabel.className = 'state-label state-listening';
+                
+                // Show listening signal, hide soundwave
+                listeningSignal.classList.add('active');
+                soundwaveContainer.classList.remove('active');
             }
         }
         
@@ -109,7 +336,12 @@ ROBOT_UI_HTML = """
         // Handle disconnection
         socket.on('disconnect', function() {
             console.log('Disconnected from robot state server');
+            // Default to listening state when disconnected
+            updateState('listening');
         });
+        
+        // Initialize with listening state
+        updateState('listening');
     </script>
 </body>
 </html>
