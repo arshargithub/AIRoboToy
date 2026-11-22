@@ -1,0 +1,14 @@
+{
+  "model": "3D-Speaker CAM++ English VoxCeleb",
+  "path": "/Volumes/MovieFactorySSD/PaprikaVoice/models/3dspeaker_speech_campplus_sv_en_voxceleb_16k.onnx",
+  "size": 29596978,
+  "sha256": "357a834f702b80161e5b981182c038e18553c1f2ca752ed6cec2052365d4129b",
+  "download_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/3dspeaker_speech_campplus_sv_en_voxceleb_16k.onnx",
+  "runtime": "sherpa-onnx",
+  "runtime_version": "2.0.1",
+  "upstream_model_id": "iic/speech_campplus_sv_en_voxceleb_16k",
+  "upstream_revision": "v1.0.2",
+  "license": "Apache-2.0 per upstream model card; retain source notice",
+  "trained_child_speaker_validation": false,
+  "live_identity_enabled": false
+}

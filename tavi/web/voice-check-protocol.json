@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "id": "paprika-voice-quality-v1",
+  "kind": "paprika_voice_quality_check",
+  "trials": [
+    {
+      "id": "sample-1",
+      "voice": "A",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "src": "/voice-check/sample-1.wav",
+      "case": "short_story",
+      "gain": 0.5108307855008115,
+      "source_sha256": "031699c74ef8603317de3bc69b4f1ffd0ca8bee58a299e7fab4f1f274d3dd698",
+      "sha256": "e4a843952135cf65bcc5b6198881603bd8f4791e58193cc564f28a2207d6fe3a"
+    },
+    {
+      "id": "sample-2",
+      "voice": "B",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "src": "/voice-check/sample-2.wav",
+      "case": "short_story",
+      "gain": 0.6433703739150539,
+      "source_sha256": "40e134a0225199d684dad11db2f97ecd8a563607cd1c33c88b082126df501653",
+      "sha256": "938fb63611252fff7286e9ee3bc4d14470fcdcc40a7e811da3a17e34abb95a5e"
+    },
+    {
+      "id": "sample-3",
+      "voice": "B",
+      "text": "Ready? A curious robot packed a sandwich, a flashlight, and a bright red scarf before climbing into a tiny submarine to explore the glowing caves beneath the ocean. There it met a turtle who collected lost bells.",
+      "src": "/voice-check/sample-3.wav",
+      "case": "short_first_sentence",
+      "gain": 0.7157194039399003,
+      "source_sha256": "8bdae17554600ef80f788198e542b9cbde2819cb1421b4c57777ac3b256c9044",
+      "sha256": "ed63c7d557316e1363234495d26542e35a99fe84a220d86bedf2a45047a55ef8"
+    },
+    {
+      "id": "sample-4",
+      "voice": "A",
+      "text": "Ready? A curious robot packed a sandwich, a flashlight, and a bright red scarf before climbing into a tiny submarine to explore the glowing caves beneath the ocean. There it met a turtle who collected lost bells.",
+      "src": "/voice-check/sample-4.wav",
+      "case": "short_first_sentence",
+      "gain": 0.5094145205930296,
+      "source_sha256": "8b5c89baaaaeba1e318b0227d377b232e72cd275615a3a61409a11f02c7f0397",
+      "sha256": "9282097fca3686bfae9bd5ef7a7938f02de94c2631695c96de9ef074ce9e4509"
+    }
+  ],
+  "voices": {
+    "A": "Mac Samantha",
+    "B": "Piper LJ Speech medium"
+  },
+  "scope": "Fixed synthetic speech only; no microphone/cloud. Bounded whole-clip RMS normalization, not perceptual loudness matching; timing benchmarks use originals."
+}

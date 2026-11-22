@@ -19,6 +19,24 @@ realtime:
 conversation:
   session_timeout_seconds: 60  # End active session if no interaction for this many seconds
 
+# Voice Identity (speaker recognition)
+identity:
+  enabled: true
+  model: "speechbrain/spkrec-ecapa-voxceleb"  # ECAPA-TDNN speaker embedding model
+  min_audio_seconds: 2.0  # Minimum speech before attempting identification
+  similarity_threshold: 0.75  # Cosine similarity threshold for a match (0.0-1.0)
+  voiceprint_db: "~/.johnny/voiceprints.db"  # Local SQLite database for voiceprints
+
+# Memory (Hindsight)
+# Set HINDSIGHT_API_URL env var to the ALB DNS from your Hindsight CDK stack,
+# e.g. http://HindsightDevStack-HindsightApiService-xxx.ca-central-1.elb.amazonaws.com
+memory:
+  enabled: true
+  hindsight_api_url: ""  # Or set HINDSIGHT_API_URL env var (takes precedence)
+  bank_id: "johnny-robot"
+  recall_limit: 10  # Max memories to inject into the prompt per turn
+  retain_context: "robot conversation"  # Context label for retained memories
+
 # UI Settings
 ui:
   enabled: true  # Enable robot web UI

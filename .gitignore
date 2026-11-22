@@ -58,5 +58,18 @@ models/**/*.pt
 
 # Node.js (not used in this Python project)
 package-lock.json
+!desktop/package-lock.json
+desktop/development.json
 node_modules/
 
+# Tavi local simulation and future private runtime data
+.tavi/
+.venv-tavi/
+.venv-voice-design/
+.venv-k-speech/
+.venv-asr-mlx/
+
+# Local Python environments and household data
+.venv-*/
+.env.*
+!.env.example

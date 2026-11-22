@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tavi vs Paprika · Name game</title>
+<style>
+:root{font:18px/1.5 ui-rounded,"SF Pro Rounded",system-ui,sans-serif;color:#203f43;background:#f2f4ec;color-scheme:light}*{box-sizing:border-box}body{margin:0;padding:24px}main{max-width:850px;margin:auto}a{color:#286666}header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}.badge{font-size:.8rem;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:#426b65}h1{font-size:clamp(2rem,5vw,3rem);line-height:1.1;margin:12px 0}h2{font-size:1.5rem;margin:0 0 12px}p{margin:12px 0}.muted{color:#56716f}.card{background:#fffef8;border:1px solid #d9e2d4;border-radius:28px;padding:clamp(24px,5vw,42px);box-shadow:0 12px 40px #23413d09}.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.names{gap:8px;margin:18px 0}.names button{padding:9px 18px;background:#edf2e7;color:#294d4a}.names button[aria-pressed=true]{background:#d3eadf;border-color:#357c69}button,input{font:inherit;border:1px solid #bacdc2;border-radius:14px;padding:13px 20px}button{cursor:pointer;background:#e9eee5;color:#254841;font-weight:650}button.primary{background:#235f53;color:white;border-color:#235f53}button:disabled{opacity:.4;cursor:default}button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #dc8a43;outline-offset:4px}input[type=text]{width:100%;max-width:400px;background:white;color:#203f43}label{display:block;margin:18px 0 8px;font-weight:600}.agreement{display:flex;align-items:flex-start;gap:12px;font-size:.9rem;font-weight:400;max-width:620px}.agreement input{width:21px;height:21px;margin-top:3px;flex-shrink:0}.help{font-size:.88rem}.stage[hidden], [hidden]{display:none!important}.progress-row{display:flex;align-items:center;gap:18px;margin-bottom:24px}progress{width:100%;height:10px;accent-color:#3c8c76}#progress-label{white-space:nowrap;font-size:.9rem;font-weight:650}#recording-card{text-align:center;min-height:365px;display:flex;flex-direction:column;justify-content:center;align-items:center;border:2px solid #d3ddd4;transition:background .2s,border-color .2s}#recording-card[data-phase=recording]{background:#eef9f0;border-color:#337b61}#phase{font-size:1.2rem;font-weight:750;margin:0}#countdown{display:inline-flex;justify-content:center;align-items:center;min-width:56px;height:56px;border-radius:50%;background:#e7eee4;font-size:1.6rem;font-variant-numeric:tabular-nums;margin:14px}#recording-card[data-phase=recording] #countdown{background:#ccebd6;color:#215e47}#phrase{font-size:clamp(2.3rem,6vw,4rem);font-weight:750;line-height:1.2;letter-spacing:-.025em;margin:12px 0 22px;max-width:100%;overflow-wrap:break-word;white-space:pre-line}.cue-help{min-height:28px;color:#54716b;margin:0}#time-left{width:min(420px,85%);height:8px;border-radius:8px;background:#dce8dc;margin-top:12px;overflow:hidden}#time-fill{height:100%;width:0;background:#3a8567;transition:width .1s linear}.session-actions{justify-content:center;margin:22px 0}.quiet{font-size:.85rem;color:#5c7470;text-align:center}#error{color:#973d2c;background:#fff0e7;padding:12px 18px;border-radius:12px}#error:empty{display:none}#status{font-size:.88rem;text-align:center;color:#4e6b65}#cue{display:none}details{margin:25px 0;font-size:.85rem;color:#536c68}summary{cursor:pointer}ol{padding-left:24px}li{margin:8px 0}.completion{font-size:3rem;line-height:1}.pronunciation{font-size:.85rem;color:#56716f;text-align:center;margin:18px 0}.end{margin-top:20px;text-align:center}footer{padding:10px 0}.setup-intro{max-width:630px}.mobile-full{min-width:210px}@media(max-width:520px){body{padding:16px}.card{border-radius:20px}.session-actions button{flex:1}.names button{padding:8px 12px}.progress-row{gap:10px}#recording-card{min-height:340px}.mobile-full{width:100%}header{margin-bottom:18px}}
+</style>
+<body data-protocol="/name-comparison-protocol.json">
+<main>
+<header><span class="badge">The name game</span><a href="/live-wake">Live Paprika test →</a></header>
+<section id="setup" class="stage">
+<h1>Tavi or Paprika?</h1>
+<p class="setup-intro muted">Help us try two names. You’ll see one phrase at a time. Read it, wait for your turn, then say it once.</p>
+<div class="card">
+<h2>Who’s speaking?</h2>
+<div class="row names" aria-label="Choose a speaker"><button type="button" data-speaker="Adult One" aria-pressed="false">Adult One</button><button type="button" data-speaker="Adult Two" aria-pressed="false">Adult Two</button><button type="button" data-speaker="Child Two" aria-pressed="false">Child Two</button><button type="button" data-speaker="Child One" aria-pressed="false">Child One</button></div>
+<label for="speaker">Speaker name</label><input id="speaker" type="text" maxlength="40" placeholder="Choose above, or type a name" autocomplete="off">
+<p class="help muted">About 4 minutes · 32 phrases · a break halfway.<br>Find a quiet spot and turn off other audio. An adult should help a child get started.</p>
+<label class="agreement"><input id="consent" type="checkbox"><span>I agree to record these voice clips and save them on this Mac for local name testing.</span></label>
+<div class="row"><button id="start" class="primary mobile-full" disabled>Let’s start</button><button id="practice">Show me a practice turn</button></div>
+<p class="help muted">The practice turn keeps the microphone off and saves nothing.</p>
+</div>
+<details><summary>For the grown-up: how this test works</summary><p>The session mixes eight calls per name with similar-sounding words and sentences that mention a name. Recognition happens later; the page will not score the speaker or talk back. Keep the microphone, position and speaking volume the same throughout.</p><p>Audio stays in this page’s memory until you download it. Nothing is uploaded to a server or cloud service. Closing or reloading loses recordings that have not been downloaded. Each speaker needs a separate session. This short comparison does not qualify a complete wake system.</p></details>
+</section>
+<section id="session" class="stage" hidden aria-label="Recording session">
+<div class="progress-row"><progress id="progress" max="32" value="0" aria-label="Phrases saved"></progress><span id="progress-label">0 of 32 saved</span></div>
+<div id="recording-card" class="card" data-phase="ready">
+<p id="phase" role="status" aria-live="polite">Read this first</p>
+<span id="countdown" aria-hidden="true">3</span>
+<div id="phrase">Ready?</div>
+<p id="cue-help" class="cue-help">Wait for “Your turn”.</p>
+<div id="time-left" aria-hidden="true"><div id="time-fill"></div></div>
+</div>
+<p class="pronunciation">Tavi = TAH-vee &nbsp; · &nbsp; Paprika = puh-PREE-kuh</p>
+<div class="row session-actions"><button id="retry" disabled>Try this one again</button><button id="pause" disabled>Take a break</button></div>
+<p class="quiet">Say only the words in the big card. Stay quiet between turns.</p>
+</section>
+<section id="break" class="stage card" hidden>
+<p class="completion" aria-hidden="true">☕</p><h1>Time for a breather.</h1>
+<p id="break-message">You’re halfway there. The microphone is off.</p>
+<p class="muted">When you’re ready, we’ll pick up with the next phrase.</p>
+<button id="resume" class="primary mobile-full">Keep going</button>
+</section>
+<section id="done" class="stage card" hidden>
+<p class="completion" aria-hidden="true">✓</p><h1 id="done-title">All done!</h1>
+<p id="done-message">32 phrases saved. The microphone is off.</p>
+<p class="muted">Download the recording, then tell the assistant “Downloaded.”</p>
+<button id="download" class="primary mobile-full" disabled>Download recording</button>
+<p class="help muted">For another speaker, download this session first, then reload the page.</p>
+</section>
+<div id="cue" aria-hidden="true">Ready when you are</div>
+<p id="status" role="status">Loading comparison · microphone off</p><p id="error" role="alert"></p>
+<div class="end"><button id="stop" disabled>End session early</button></div>
+<footer class="quiet">Local recording only · no paid API calls</footer>
+<script src="/sample-collector.js"></script><script src="/wake-samples.js"></script>
+</main></body></html>

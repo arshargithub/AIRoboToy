@@ -1,0 +1,86 @@
+{
+  "work_item": "F1",
+  "inputs": [
+    "experiments/speaker-id/model-manifest.json",
+    "experiments/speaker-id/model-assets.json",
+    "experiments/speaker-id/environment.json",
+    "experiments/speaker-id/family-prompts-v1.json",
+    "experiments/speaker-id/family-prompt-audio-assets-v1.json"
+  ],
+  "input_manifests": [
+    "experiments/speaker-id/model-assets.json",
+    "experiments/speaker-id/family-prompt-audio-assets-v1.json"
+  ],
+  "limits": {
+    "maximum_additional_api_usd": 0,
+    "maximum_runs": 1,
+    "maximum_wall_seconds": 86400,
+    "total_project_api_usd": 25
+  },
+  "source_paths": [
+    "tavi/voice_calibration.py",
+    "tavi/calibration_service.py",
+    "tavi/identity_catalog.py",
+    "tavi/identity_policy.py",
+    "tavi/identity_qualification.py",
+    "tavi/speaker_evidence.py",
+    "tavi/speaker_process.py",
+    "tavi/speaker_worker.py",
+    "tavi/speaker_profile.py",
+    "tavi/acoustics.py",
+    "tavi/experiment_workflow.py",
+    "tavi/mac_service.py",
+    "tavi/family_collection.py",
+    "tavi/web/voice-calibration.html",
+    "tavi/web/voice-calibration.css",
+    "tavi/web/voice-calibration.js",
+    "tavi/web/capture.js",
+    "desktop/main.cjs",
+    "desktop/preload.cjs",
+    "pyproject.toml",
+    "uv.lock"
+  ],
+  "next_actions": {
+    "pass": "Preserve the reviewed local visit; continue short visits only when people are available. Collection is not identity or household memory acceptance.",
+    "fail": "Keep failures and earlier examples. Investigate the failed screen before requesting further speech.",
+    "error": "Stop microphone and owned work; preserve earlier examples, retry exact local save or resume with fresh consent. No cloud fallback.",
+    "needs_evidence": "Wait for voluntary human voices and independent adult review through the complete in-app flow; no agent microphone or fabricated consent."
+  },
+  "experiment_id": "VOICE-CALIBRATION-CAPTURE-01",
+  "hypothesis": "Short, explicitly consented and reviewed fresh local visits yield independently labelled calibration examples without changing enrollment, transcribing speech, sending audio to cloud or enabling identity/memory.",
+  "configuration": {
+    "roles": "Four named family members, consenting unrelated guest adult, heldout-only adult short and supervised willing two-voice overlap controls. Never label unregistered family as unrelated unknown.",
+    "protocol": "Development minimum12eligible/person and20eligible unrelated guest, from max4visits/role; each visit max12attempts, batch6, up to5seconds/clip, optional private local WAV. Heldout remains locked until all4profiles and development fit; later independently declared occasion, minimum25eligible/person,20unknown,20short+overlap with both represented, max6visits/role.",
+    "review": "Adult/self labels before scores; preserve ineligible/technical/no-audio attempts. Exclude wrong/silly/unsure voices; delete their provisional audio/vector. Same-ID retry is idempotent; exact reused PCM never independent. Fresh questions instead of forced retakes.",
+    "authority": "Execution/collection screen only, no measured identity accuracy. No voice matching threshold, memory write, model training, cloud speech or paid API from this visit. Cutoffs derived only from development; heldout scored once with frozen code/model/profile/cutoffs.",
+    "capture": "16k mono signed16PCM, requested EC/NS true AGC false. Minimum2s voiced local quality except intentional short control; no guarantee of speaker isolation from VAD. Mic starts on explicit Record only, countdown/prompt persists, automatic stop before processing. Native encoder max10s startup/20s request."
+  },
+  "data_policy": "new_voice_calibration_consent",
+  "criteria": [
+    {
+      "metric": "subject_bound",
+      "equals": true
+    },
+    {
+      "metric": "reviewed",
+      "equals": true
+    },
+    {
+      "metric": "attempts",
+      "min": 0,
+      "max": 12
+    },
+    {
+      "metric": "candidate_authority_disabled",
+      "equals": true
+    },
+    {
+      "metric": "cloud_requests",
+      "equals": 0
+    },
+    {
+      "metric": "additional_api_usd",
+      "max": 0
+    }
+  ]
+}

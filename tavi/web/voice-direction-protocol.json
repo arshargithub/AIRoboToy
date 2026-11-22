@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "id": "paprika-voice-direction-v1",
+  "kind": "paprika_voice_character_check",
+  "display_order": [
+    "I",
+    "K",
+    "L",
+    "M"
+  ],
+  "voices": {
+    "I": "Retained 50% af_heart / 50% af_nicole",
+    "K": "65% af_heart / 35% af_nicole",
+    "L": "Qwen VoiceDesign \u00b7 youthful, warm and lightly husky",
+    "M": "Qwen VoiceDesign \u00b7 youthful, confident and lightly raspy"
+  },
+  "passages": {
+    "short_story": "Fox story",
+    "greeting": "Hello from Paprika"
+  },
+  "reference_feedback": {
+    "voice": "I",
+    "viable_candidate": true,
+    "accepted": false,
+    "requested_change": "Keep the half blend, add 35% donor, and try naturally youthful slightly husky female voice."
+  },
+  "method": "Two retained/derived Kokoro candidates versus natural-language voice design; no added distortion or pitch effects.",
+  "design_model": {
+    "repository": "mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-4bit",
+    "revision": "5c390979e4b93af5f2932f90742ca99c7dd04687",
+    "manifest_sha256": "aeeddb674979e4155ac03cd533c7e5a0b59e3a58de7575f458ba991633d58c7f",
+    "license": "Apache-2.0"
+  },
+  "design_settings": {
+    "memory_limit_bytes": 6442450944,
+    "cache_limit_bytes": 268435456,
+    "max_tokens": 350,
+    "temperature": 0.7,
+    "top_k": 50,
+    "top_p": 0.95,
+    "repetition_penalty": 1.05,
+    "per_clip_timeout_seconds": 180,
+    "library_versions": {
+      "mlx-audio": "0.6.3",
+      "mlx": "0.32.4",
+      "transformers": "5.22.1",
+      "numpy": "2.4.6"
+    }
+  },
+  "pronunciation": {
+    "name": "Paprika",
+    "target": "puh-PREE-kuh",
+    "ipa": "p\u0259\u02c8pri\u02d0k\u0259",
+    "method": "Explicit Kokoro phonemes; natural-language instruction for designed voices. Human listening still required."
+  },
+  "trials": [
+    {
+      "id": "direction-1",
+      "voice": "I",
+      "case": "short_story",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "src": "/voice-direction/sample-1.wav",
+      "sha256": "ef9fc18082dbba964402c02a9cd6717bfcdf61163b3b3ecc96d6d001e9b6b2c2",
+      "gain": 1,
+      "original_reference_unchanged": true,
+      "pronunciation_override": null,
+      "preparation_ms": 0.8662920154165477
+    },
+    {
+      "id": "direction-2",
+      "voice": "I",
+      "case": "greeting",
+      "text": "Hi, I'm Paprika. What should we explore today? I think we can handle a little adventure.",
+      "src": "/voice-direction/sample-2.wav",
+      "sha256": "5c3ab243061ec84b7aaba1375ebcb7e7d9595326908e9261a9737adb3e69dfaf",
+      "gain": 1.5538915085380651,
+      "original_reference_unchanged": false,
+      "pronunciation_override": "p\u0259\u02c8pri\u02d0k\u0259",
+      "preparation_ms": 3616.901917004725
+    },
+    {
+      "id": "direction-3",
+      "voice": "K",
+      "case": "short_story",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "src": "/voice-direction/sample-3.wav",
+      "sha256": "163e0c4c5e538bcc513c02252d01caab55898fb4aea0e1045e4e6e0ad0d1f22c",
+      "gain": 1.5140076406356069,
+      "original_reference_unchanged": false,
+      "pronunciation_override": null,
+      "preparation_ms": 5005.081625015009
+    },
+    {
+      "id": "direction-4",
+      "voice": "K",
+      "case": "greeting",
+      "text": "Hi, I'm Paprika. What should we explore today? I think we can handle a little adventure.",
+      "src": "/voice-direction/sample-4.wav",
+      "sha256": "746c29bb0b94591f9084069c59f4c1f35f1c999d79c0dc7f08539004ef5d2933",
+      "gain": 1.5755921145775618,
+      "original_reference_unchanged": false,
+      "pronunciation_override": "p\u0259\u02c8pri\u02d0k\u0259",
+      "preparation_ms": 3731.2704999931157
+    },
+    {
+      "voice": "L",
+      "case": "short_story",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "instruction": "A young adult woman in her early twenties speaking natural American English. Her voice is youthful, warm and naturally a little husky, with a light organic rasp in her tone. She has a grounded low-to-mid register and clear confident presence. Her delivery is relaxed, friendly, playful and conversational.",
+      "seed": 43,
+      "preparation_ms": 7929.636499990011,
+      "duration_ms": 9920.0,
+      "tokens": 124,
+      "peak_memory_bytes": 5650324311,
+      "id": "direction-5",
+      "src": "/voice-direction/sample-5.wav",
+      "sha256": "81045181fbda5c77dde59c2e85cccfdbab8907c377ba8968d3a2573bca4d124a",
+      "gain": 0.944090797256497
+    },
+    {
+      "voice": "L",
+      "case": "greeting",
+      "text": "Hi, I'm Paprika. What should we explore today? I think we can handle a little adventure.",
+      "instruction": "A young adult woman in her early twenties speaking natural American English. Her voice is youthful, warm and naturally a little husky, with a light organic rasp in her tone. She has a grounded low-to-mid register and clear confident presence. Her delivery is relaxed, friendly, playful and conversational. Pronounce the name Paprika as puh-PREE-kuh, IPA /p\u0259\u02c8pri\u02d0k\u0259/. The first syllable is a short unstressed puh, not pah or pap; stress PREE, then a short unstressed kuh. Speak the name smoothly as one word.",
+      "seed": 43,
+      "pronunciation_target": "puh-PREE-kuh",
+      "pronunciation_ipa": "p\u0259\u02c8pri\u02d0k\u0259",
+      "preparation_ms": 3436.5448750031646,
+      "duration_ms": 7200.0,
+      "tokens": 90,
+      "peak_memory_bytes": 5598604529,
+      "id": "direction-6",
+      "src": "/voice-direction/sample-6.wav",
+      "sha256": "f5b8b6eef0becbebdc05ce3ff04b28c279c7d778b2fd53380f0a6960984fff07",
+      "gain": 0.8005309382005941
+    },
+    {
+      "voice": "M",
+      "case": "short_story",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "instruction": "A youthful adult female voice speaking American English with a naturally slightly raspy, textured timbre and a warm resonant core. She sounds confident and lively, with easy conversational energy, natural rhythm and expressive intonation. The light huskiness is part of her normal speaking voice.",
+      "seed": 71,
+      "preparation_ms": 3576.518959016539,
+      "duration_ms": 8160.0,
+      "tokens": 102,
+      "peak_memory_bytes": 5529007311,
+      "id": "direction-7",
+      "src": "/voice-direction/sample-7.wav",
+      "sha256": "5feab016a9a8b7abd0a6088b13ae5365731df19f6bdf1e7076491acb60a1473a",
+      "gain": 0.6327363229658949
+    },
+    {
+      "voice": "M",
+      "case": "greeting",
+      "text": "Hi, I'm Paprika. What should we explore today? I think we can handle a little adventure.",
+      "instruction": "A youthful adult female voice speaking American English with a naturally slightly raspy, textured timbre and a warm resonant core. She sounds confident and lively, with easy conversational energy, natural rhythm and expressive intonation. The light huskiness is part of her normal speaking voice. Pronounce the name Paprika as puh-PREE-kuh, IPA /p\u0259\u02c8pri\u02d0k\u0259/. The first syllable is a short unstressed puh, not pah or pap; stress PREE, then a short unstressed kuh. Speak the name smoothly as one word.",
+      "seed": 71,
+      "pronunciation_target": "puh-PREE-kuh",
+      "pronunciation_ipa": "p\u0259\u02c8pri\u02d0k\u0259",
+      "preparation_ms": 3934.2606250138488,
+      "duration_ms": 8640.0,
+      "tokens": 108,
+      "peak_memory_bytes": 5741259077,
+      "id": "direction-8",
+      "src": "/voice-direction/sample-8.wav",
+      "sha256": "4facd1fcd2c40d549fa4be1c8bb1e7520a689f29bcb2a3a32b04f2914e76fa96",
+      "gain": 0.9517721733457359
+    }
+  ],
+  "api_spend_usd": 0,
+  "microphone_used": false,
+  "limitations": [
+    "Voice descriptions are targets, not independently verified vocal traits.",
+    "Designed identity consistency across passages and live performance remain unqualified."
+  ]
+}

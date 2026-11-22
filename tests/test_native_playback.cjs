@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict');const {NativePlayback}=require('../tavi/web/native-playback.js');
+let sources=[],starts=[],ends=[];const ctx={currentTime:0,destination:{},createGain(){return {gain:{value:1},connect(){},disconnect(){}}},createBuffer(n,frames,rate){return {getChannelData:()=>new Float32Array(frames)}},createBufferSource(){const s={connect(){},disconnect(){},start(t){this.scheduled=t},stop(){this.stopped=true}};sources.push(s);return s;}};
+const p=new NativePlayback(ctx,{onStart:(id,time)=>starts.push({id,time}),onComplete:id=>ends.push(id)});
+p.add('r',new Int16Array(24000));p.add('r',new Int16Array(24000));assert.equal(starts.length,1);assert.equal(sources[1].scheduled,1.02);
+ctx.currentTime=.52;assert.equal(p.stop('r'),500);assert.ok(sources.every(s=>s.stopped));p.add('r',new Int16Array(24000));assert.equal(sources.length,2,'blocked id never restarts');p.done('r');assert.deepEqual(ends,[]);
+ctx.currentTime=3;p.add('gap',new Int16Array(24000));ctx.currentTime=4.2;sources.at(-1).onended();p.add('gap',new Int16Array(24000));ctx.currentTime=4.72;assert.ok(Math.abs(p.playedMs('gap')-1500)<=1,'gaps must not count as heard');p.done('gap');assert.deepEqual(ends,[]);ctx.currentTime=5.22;sources.at(-1).onended();assert.deepEqual(ends,['gap']);
+p.stop('late');p.add('late',new Int16Array(120));assert.equal(starts.length,2);console.log('Native playback: bounded played clock, queue gaps, immediate local stop, late suppression and complete callbacks passed');
+
+// The original check hangs if an ended callback observes an earlier clock.
+ctx.currentTime=10;p.add('quantized',new Int16Array(12345));p.done('quantized');const last=sources.at(-1);ctx.currentTime=last.scheduled+12345/24000-.004;last.onended();assert.equal(ends.at(-1),'quantized');last.onended();assert.equal(ends.filter(x=>x==='quantized').length,1);
+ctx.currentTime=12;p.add('done-late',new Int16Array(12345));const endedFirst=sources.at(-1);ctx.currentTime=endedFirst.scheduled+12345/24000-.006;endedFirst.onended();assert.ok(!ends.includes('done-late'));p.done('done-late');assert.equal(ends.at(-1),'done-late');
+ctx.currentTime=14;p.add('separate-events',new Int16Array(1200));p.add('separate-events',new Int16Array(1200));const a=sources.at(-2),b=sources.at(-1);ctx.currentTime=20;p.done('separate-events');b.onended();assert.ok(!ends.includes('separate-events'),'clock alone cannot prove another source ended');a.onended();assert.equal(ends.at(-1),'separate-events');
+console.log('Completion regression: early clock, late provider done, separate source ended events and exactly-once transition passed');

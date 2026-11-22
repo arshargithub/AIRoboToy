@@ -1,0 +1,7 @@
+{
+  "kind": "fictional_shared_play",
+  "facts": [
+    {"id": "pretend-fort", "audience": "shared", "text": "The pretend blanket fort is called Star Nest."},
+    {"id": "pretend-mascot", "audience": "shared", "text": "The pretend fort's mascot is an orange fox called Pixel."}
+  ]
+}

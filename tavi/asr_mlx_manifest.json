@@ -1,0 +1,121 @@
+{
+  "scope": "Pinned MLX model downloads; no recording or inference",
+  "models": [
+    {
+      "id": "base.en",
+      "repo": "mlx-community/whisper-base.en-mlx",
+      "revision": "aa0678c3466ed62c5c6114ec600a0e1f96820089",
+      "path": ".tavi/models/asr-mlx/base.en",
+      "files": {
+        "weights.npz": {
+          "size": 143723132,
+          "sha256": "b6c8ee500656e04e8e57c2949a5253f0dda002ba36cd1561846574dbcf01132e"
+        },
+        "config.json": {
+          "size": 262,
+          "sha256": "b0f55e86f8092c1188306dc346742253f759aecea0da7b00ae526e566fd53b14"
+        }
+      },
+      "config": {
+        "n_mels": 80,
+        "n_audio_ctx": 1500,
+        "n_audio_state": 512,
+        "n_audio_head": 8,
+        "n_audio_layer": 6,
+        "n_vocab": 51864,
+        "n_text_ctx": 448,
+        "n_text_state": 512,
+        "n_text_head": 8,
+        "n_text_layer": 6,
+        "model_type": "whisper"
+      }
+    },
+    {
+      "id": "small.en",
+      "repo": "mlx-community/whisper-small.en-mlx",
+      "revision": "52a88bf6e98b114a210c21bb83e22d6e1505cb73",
+      "path": ".tavi/models/asr-mlx/small.en",
+      "files": {
+        "weights.npz": {
+          "size": 481306200,
+          "sha256": "1bb29b030aca711a035f7a084a0eefac6251ecc2bdd356fa748858fbad082f5a"
+        },
+        "config.json": {
+          "size": 266,
+          "sha256": "40028e43687458e79ba89cc16bf14184c5414a5cbc00fd511f8f78d138647afd"
+        }
+      },
+      "config": {
+        "n_mels": 80,
+        "n_audio_ctx": 1500,
+        "n_audio_state": 768,
+        "n_audio_head": 12,
+        "n_audio_layer": 12,
+        "n_vocab": 51864,
+        "n_text_ctx": 448,
+        "n_text_state": 768,
+        "n_text_head": 12,
+        "n_text_layer": 12,
+        "model_type": "whisper"
+      }
+    },
+    {
+      "id": "medium.en",
+      "repo": "mlx-community/whisper-medium.en-mlx",
+      "revision": "8d0335069b551e8586b8a4680674403d9417dfe4",
+      "path": ".tavi/models/asr-mlx/medium.en",
+      "files": {
+        "weights.npz": {
+          "size": 1524923056,
+          "sha256": "66cda8c3df03af0b922764620d46734240ab82c54348c5848238c8604bdadbdb"
+        },
+        "config.json": {
+          "size": 268,
+          "sha256": "20f1b6b70cab52e6669c2a095fd3bcc16aa25c7e367d29060f876d4728832b45"
+        }
+      },
+      "config": {
+        "n_mels": 80,
+        "n_audio_ctx": 1500,
+        "n_audio_state": 1024,
+        "n_audio_head": 16,
+        "n_audio_layer": 24,
+        "n_vocab": 51864,
+        "n_text_ctx": 448,
+        "n_text_state": 1024,
+        "n_text_head": 16,
+        "n_text_layer": 24,
+        "model_type": "whisper"
+      }
+    },
+    {
+      "id": "turbo",
+      "repo": "mlx-community/whisper-large-v3-turbo",
+      "revision": "a4aaeec0636e6fef84abdcbe3544cb2bf7e9f6fb",
+      "path": ".tavi/models/asr-mlx/turbo",
+      "files": {
+        "weights.safetensors": {
+          "size": 1613977612,
+          "sha256": "951ed3fc1203e6a62467abb2144a96ce7eafca8fa77e3704fdb8635ff3e7f8a6"
+        },
+        "config.json": {
+          "size": 268,
+          "sha256": "b34fc29e4e11e0a25e812775dd67f4dd16fc2c8eb43d28ae25ff7d660ecb6379"
+        }
+      },
+      "config": {
+        "n_mels": 128,
+        "n_audio_ctx": 1500,
+        "n_audio_state": 1280,
+        "n_audio_head": 20,
+        "n_audio_layer": 32,
+        "n_vocab": 51866,
+        "n_text_ctx": 448,
+        "n_text_state": 1280,
+        "n_text_head": 20,
+        "n_text_layer": 4,
+        "model_type": "whisper"
+      }
+    }
+  ]
+}

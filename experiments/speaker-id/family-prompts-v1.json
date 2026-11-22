@@ -1,0 +1,221 @@
+{
+  "version": 1,
+  "prompts": [
+    {
+      "id": "destination",
+      "scene": "moon",
+      "question": "Where should our spaceship go?",
+      "help": "What do you think we might find there?",
+      "ideas": [
+        "The moon",
+        "A jungle planet",
+        "Somewhere I invent"
+      ]
+    },
+    {
+      "id": "packing",
+      "scene": "bag",
+      "question": "What should we pack for our trip?",
+      "help": "Tell Paprika what we could use it for.",
+      "ideas": [
+        "A blanket",
+        "A torch",
+        "My own idea"
+      ]
+    },
+    {
+      "id": "creature",
+      "scene": "creature",
+      "question": "What friendly creature might we meet?",
+      "help": "What does it look like?",
+      "ideas": [
+        "A little dragon",
+        "A fluffy giant",
+        "Something new"
+      ]
+    },
+    {
+      "id": "house",
+      "scene": "home",
+      "question": "What kind of little home could we build?",
+      "help": "What would you put inside?",
+      "ideas": [
+        "A tree house",
+        "A cosy tent",
+        "A space castle"
+      ]
+    },
+    {
+      "id": "rescue",
+      "scene": "tools",
+      "question": "Our spaceship is stuck! What could we try?",
+      "help": "What might help us get moving?",
+      "ideas": [
+        "Build a ramp",
+        "Ask our new friend",
+        "Another idea"
+      ]
+    },
+    {
+      "id": "memory",
+      "scene": "star",
+      "question": "What was your favourite part of our trip?",
+      "help": "Tell Paprika a little about it.",
+      "ideas": [
+        "Our new friend",
+        "Exploring",
+        "Something else"
+      ]
+    },
+    {
+      "id": "garden",
+      "scene": "garden",
+      "question": "What should we grow in our space garden?",
+      "help": "What would it look like when it grows?",
+      "ideas": [
+        "Giant flowers",
+        "Funny fruit",
+        "My own plant"
+      ]
+    },
+    {
+      "id": "vehicle",
+      "scene": "rover",
+      "question": "How could we travel around our new planet?",
+      "help": "Tell Paprika about a vehicle we could make.",
+      "ideas": [
+        "A little rover",
+        "A flying boat",
+        "Something I invent"
+      ]
+    },
+    {
+      "id": "picnic",
+      "scene": "bag",
+      "question": "Where could we have a pretend picnic?",
+      "help": "What would make it a good spot?",
+      "ideas": [
+        "Under a tree",
+        "Beside a crater",
+        "Somewhere else"
+      ]
+    },
+    {
+      "id": "weather",
+      "scene": "moon",
+      "question": "What is the weather like on our planet?",
+      "help": "What would we wear outside?",
+      "ideas": [
+        "Snowy",
+        "Warm and sunny",
+        "Something surprising"
+      ]
+    },
+    {
+      "id": "gift",
+      "scene": "creature",
+      "question": "What could we make for our new friend?",
+      "help": "How would we make it?",
+      "ideas": [
+        "A little house",
+        "A drawing",
+        "My own idea"
+      ]
+    },
+    {
+      "id": "homecoming",
+      "scene": "star",
+      "question": "What would you tell someone about our trip?",
+      "help": "What should we explore next time?",
+      "ideas": [
+        "The creatures",
+        "Our spaceship",
+        "The next adventure"
+      ]
+    },
+    {
+      "id": "map",
+      "scene": "moon",
+      "question": "What would you draw on a map of our planet?",
+      "help": "What would help a visitor find their way?",
+      "ideas": []
+    },
+    {
+      "id": "robot",
+      "scene": "tools",
+      "question": "What helper robot could we build?",
+      "help": "Tell Paprika what it could do.",
+      "ideas": []
+    },
+    {
+      "id": "tree",
+      "scene": "garden",
+      "question": "What might a tree look like on this planet?",
+      "help": "What could grow on its branches?",
+      "ideas": []
+    },
+    {
+      "id": "boat",
+      "scene": "rover",
+      "question": "How could we cross a pretend river?",
+      "help": "What would our boat look like?",
+      "ideas": []
+    },
+    {
+      "id": "music",
+      "scene": "star",
+      "question": "What music might our new friends enjoy?",
+      "help": "Tell Paprika about a pretend instrument.",
+      "ideas": []
+    },
+    {
+      "id": "shelter",
+      "scene": "home",
+      "question": "It is raining on our planet. Where could we go?",
+      "help": "What would make it cosy?",
+      "ideas": []
+    },
+    {
+      "id": "trail",
+      "scene": "moon",
+      "question": "What might we find at the end of a little trail?",
+      "help": "What would we do when we got there?",
+      "ideas": []
+    },
+    {
+      "id": "meal",
+      "scene": "bag",
+      "question": "What pretend food could we pack for our friends?",
+      "help": "What would make it special?",
+      "ideas": []
+    },
+    {
+      "id": "game",
+      "scene": "creature",
+      "question": "What game could we play with our new friend?",
+      "help": "How would we play it?",
+      "ideas": []
+    },
+    {
+      "id": "invention",
+      "scene": "tools",
+      "question": "What new thing could you invent for this world?",
+      "help": "Tell Paprika what it would look like.",
+      "ideas": []
+    },
+    {
+      "id": "sunset",
+      "scene": "star",
+      "question": "What colours might we see in the sky here?",
+      "help": "What would you like to draw?",
+      "ideas": []
+    },
+    {
+      "id": "nexttrip",
+      "scene": "rover",
+      "question": "Where could we explore on our next trip?",
+      "help": "What would you like to find?",
+      "ideas": []
+    }
+  ]
+}

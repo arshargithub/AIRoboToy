@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tavi · Local wake samples</title>
+<style>:root{color-scheme:dark;font:18px system-ui;background:#141d24;color:#eaf2ef}body{max-width:760px;margin:35px auto;padding:0 24px}a{color:#bdf7d9}p{line-height:1.6}label{display:block;margin:20px 0}button,input{font:inherit;padding:12px;border-radius:9px;border:1px solid #58716e;background:#263a3c;color:inherit}button{cursor:pointer}button:disabled{opacity:.4}#cue{position:sticky;top:8px;padding:24px;border:2px solid #bdf7d9;border-radius:15px;background:#203a3d;font-size:1.7rem;min-height:2em}#error{color:#ffcdad}.controls{display:flex;gap:12px;flex-wrap:wrap}input[type=checkbox]{width:20px;height:20px;vertical-align:middle}progress{width:100%}</style>
+<a href="/audio">← Audio test</a><h1>Local wake-word samples</h1>
+<p>New: <a href="/name-comparison">Tavi vs Paprika comparison</a> — use this for the matched name test.</p>
+<p>This records 20 short microphone clips: 10 calls of TAH-vee and 10 similar-sounding phrases. It takes about two minutes. These are development samples; a later, separate session will be needed for validation.</p>
+<p>Clips stay in this page's memory until you choose Download. Nothing is uploaded. Closing or reloading the page discards clips that have not been downloaded. The download contains your voice for local wake-detector development, so use only the displayed phrases.</p>
+<label>Speaker label <input id="speaker" maxlength="40" placeholder="For example: Adult One" autocomplete="off"></label>
+<label><input id="consent" type="checkbox"> I agree to record these short voice samples and save them in a local download for wake-detector development.</label>
+<div class="controls"><button id="start">Start recording samples</button><button id="stop" disabled>Stop and mute</button><button id="download" disabled>Download samples</button></div>
+<p id="status" role="status">Microphone off · no samples recorded</p><div id="cue" role="status" aria-live="polite">Ready when you are</div>
+<progress id="progress" max="20" value="0"></progress><p id="error" role="alert"></p>
+<p>Use your normal voice and the same microphone as the audio test. Keep the room quiet and do not play the reference. Say each phrase once when SAY appears, then stay quiet. The microphone closes automatically at the end.</p>
+<script src="/sample-collector.js"></script><script src="/wake-samples.js"></script></html>

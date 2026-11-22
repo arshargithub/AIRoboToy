@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "id": "paprika-voice-character-v1",
+  "kind": "paprika_voice_character_check",
+  "display_order": [
+    "B",
+    "C",
+    "D",
+    "E"
+  ],
+  "voices": {
+    "B": "Piper LJ Speech medium \u00b7 earlier reference",
+    "C": "Kokoro af_heart",
+    "D": "Kokoro af_bella",
+    "E": "Kokoro af_kore"
+  },
+  "passages": {
+    "short_story": "Fox story",
+    "greeting": "Hello from Paprika"
+  },
+  "brief": "Youthful adult female voice; confident, warm, full sound with some texture and natural expression.",
+  "reference_feedback": {
+    "voice": "B",
+    "passage": "short_story",
+    "user_rating": "okay, still not what I want",
+    "accepted": false
+  },
+  "trials": [
+    {
+      "id": "audition-1",
+      "voice": "B",
+      "case": "short_story",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "src": "/voice-audition/sample-1.wav",
+      "sha256": "938fb63611252fff7286e9ee3bc4d14470fcdcc40a7e811da3a17e34abb95a5e",
+      "gain": 1,
+      "original_reference_unchanged": true,
+      "preparation_ms": 0.6951249961275607,
+      "phonemizer": "Piper voice frontend"
+    },
+    {
+      "id": "audition-2",
+      "voice": "B",
+      "case": "greeting",
+      "text": "Hi, I'm Paprika. What should we explore today? I think we can handle a little adventure.",
+      "src": "/voice-audition/sample-2.wav",
+      "sha256": "1141f117c793fb9b09a443dd3f47bb34f99b58ed4d01658eaf0cc904c47639b4",
+      "gain": 0.6820197895478599,
+      "original_reference_unchanged": false,
+      "preparation_ms": 218.2559589855373,
+      "phonemizer": "Piper voice frontend"
+    },
+    {
+      "id": "audition-3",
+      "voice": "C",
+      "case": "short_story",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "src": "/voice-audition/sample-3.wav",
+      "sha256": "e59acd81cb39e4b0ff66c62260c0eabd9e301844ae7a6d263db9acf054fa524d",
+      "gain": 1.4967821004016406,
+      "original_reference_unchanged": false,
+      "preparation_ms": 3406.6529580159113,
+      "phonemizer": "piper bundled eSpeak en-us"
+    },
+    {
+      "id": "audition-4",
+      "voice": "C",
+      "case": "greeting",
+      "text": "Hi, I'm Paprika. What should we explore today? I think we can handle a little adventure.",
+      "src": "/voice-audition/sample-4.wav",
+      "sha256": "6befad09c2b348dbc0b14f9ecca35bc020e7bafd1c24b3a4bb8a4e6cdba1a187",
+      "gain": 1.628235368559539,
+      "original_reference_unchanged": false,
+      "preparation_ms": 2398.291833989788,
+      "phonemizer": "piper bundled eSpeak en-us"
+    },
+    {
+      "id": "audition-5",
+      "voice": "D",
+      "case": "short_story",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "src": "/voice-audition/sample-5.wav",
+      "sha256": "0d1b409fdc29805fe9f06a1da16132f2e444858d16552e557ec8fe2579be7651",
+      "gain": 1.3572401054333953,
+      "original_reference_unchanged": false,
+      "preparation_ms": 3469.909749983344,
+      "phonemizer": "piper bundled eSpeak en-us"
+    },
+    {
+      "id": "audition-6",
+      "voice": "D",
+      "case": "greeting",
+      "text": "Hi, I'm Paprika. What should we explore today? I think we can handle a little adventure.",
+      "src": "/voice-audition/sample-6.wav",
+      "sha256": "29d715c70fd8030fc44d3de8c2dc0df780d11e71d2ab301f41a083d746bac2b3",
+      "gain": 1.5727001287612423,
+      "original_reference_unchanged": false,
+      "preparation_ms": 2533.0634999845643,
+      "phonemizer": "piper bundled eSpeak en-us"
+    },
+    {
+      "id": "audition-7",
+      "voice": "E",
+      "case": "short_story",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "src": "/voice-audition/sample-7.wav",
+      "sha256": "90e46144f7fe0c79d937df8df692efc22a5ea4b5a42e23172fb73903a8c43b87",
+      "gain": 0.9641821817238219,
+      "original_reference_unchanged": false,
+      "preparation_ms": 3354.9250829964876,
+      "phonemizer": "piper bundled eSpeak en-us"
+    },
+    {
+      "id": "audition-8",
+      "voice": "E",
+      "case": "greeting",
+      "text": "Hi, I'm Paprika. What should we explore today? I think we can handle a little adventure.",
+      "src": "/voice-audition/sample-8.wav",
+      "sha256": "c15cb4aae3d07662a3330d1870f3f88dc6410bc8fa5e5ef2f604f4b2818860cf",
+      "gain": 1.0173864524595102,
+      "original_reference_unchanged": false,
+      "preparation_ms": 2594.1613749891985,
+      "phonemizer": "piper bundled eSpeak en-us"
+    }
+  ],
+  "api_spend_usd": 0,
+  "microphone_used": false,
+  "scope": "Prerecorded voice-character audition; not a live latency or intelligibility qualification."
+}

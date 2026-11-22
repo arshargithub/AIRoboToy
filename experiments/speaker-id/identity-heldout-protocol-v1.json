@@ -1,0 +1,77 @@
+{
+  "work_item": "F1",
+  "inputs": [
+    "experiments/speaker-id/model-manifest.json",
+    "experiments/speaker-id/model-assets.json",
+    "experiments/speaker-id/environment.json",
+    "experiments/speaker-id/family-prompts-v1.json",
+    "experiments/speaker-id/family-prompt-audio-assets-v1.json"
+  ],
+  "input_manifests": [
+    "experiments/speaker-id/model-assets.json",
+    "experiments/speaker-id/family-prompt-audio-assets-v1.json"
+  ],
+  "limits": {
+    "maximum_additional_api_usd": 0,
+    "maximum_runs": 1,
+    "maximum_wall_seconds": 86400,
+    "total_project_api_usd": 25
+  },
+  "source_paths": [
+    "tavi/voice_calibration.py",
+    "tavi/calibration_service.py",
+    "tavi/identity_catalog.py",
+    "tavi/identity_policy.py",
+    "tavi/identity_qualification.py",
+    "tavi/speaker_evidence.py",
+    "tavi/speaker_process.py",
+    "tavi/speaker_worker.py",
+    "tavi/speaker_profile.py",
+    "tavi/acoustics.py",
+    "tavi/experiment_workflow.py",
+    "tavi/mac_service.py",
+    "tavi/family_collection.py",
+    "tavi/web/voice-calibration.html",
+    "tavi/web/voice-calibration.css",
+    "tavi/web/voice-calibration.js",
+    "tavi/web/capture.js",
+    "desktop/main.cjs",
+    "desktop/preload.cjs",
+    "pyproject.toml",
+    "uv.lock",
+    "experiments/speaker-id/identity_metrics.py"
+  ],
+  "next_actions": {
+    "pass": "Record individual identity component qualification only. Continue group/side conversation/closure and separate guarded household memory integration qualification before product acceptance.",
+    "fail": "Preserve once-scored heldout outcome, keep recognition unqualified, diagnose quality/model/acoustic limitations prospectively; no threshold retuning on these labels.",
+    "error": "Stop microphone and owned work; preserve earlier examples, retry exact local save or resume with fresh consent. No cloud fallback.",
+    "needs_evidence": "Wait for voluntary human voices and independent adult review through the complete in-app flow; no agent microphone or fabricated consent."
+  },
+  "experiment_id": "IDENTITY-HELDOUT-01",
+  "hypothesis": "One frozen development-only cosine and separation rule meets the original individual identity sub-screen on separately reviewed heldout local recordings, without accepting full group interaction or household memory.",
+  "configuration": {
+    "inputs": "At evaluation the exact reviewed rows, profile files and development policy are private hash-bound inputs before decisions. Model files and decision/evaluation source code also frozen. No thresholds adjusted on heldout.",
+    "coverage": "Four enrolled people with >=25eligible2-5s utterances each, >=20unknown, >=20short+overlap with both present. All enrollment, historical enrollment reuse and development sessions/PCM excluded. Unknown decisions count against known accuracy; all attempted/ineligible rows retained.",
+    "gates": "Known >=90%overall and>=85%each; confident wrong known <=1%; unknown rejection>=95%; zero hypothetical uncertain/overlap personal memory authorization. Similarity is not probability. Unknown/overlap truth labels are never classifier inputs.",
+    "limits": "A single scored evaluation for this frozen configuration. A failure is preserved and does not authorize retuning on those labels or automatic repeat. Group followups/side conversations/closure, E4 and E5 acceptance remain open."
+  },
+  "data_policy": "saved_audio_local",
+  "criteria": [
+    {
+      "metric": "identity_component_pass",
+      "equals": true
+    },
+    {
+      "metric": "heldout_independent",
+      "equals": true
+    },
+    {
+      "metric": "real_cloud_requests",
+      "equals": 0
+    },
+    {
+      "metric": "additional_api_usd",
+      "max": 0
+    }
+  ]
+}

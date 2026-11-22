@@ -1,0 +1,15 @@
+{
+  "voice": "K",
+  "base": "af_heart",
+  "base_weight": 0.65,
+  "donor": "af_nicole",
+  "donor_weight": 0.35,
+  "source_styles_sha256": "1c5a5b983d3d50d8586d437a51f3faa2da7919ce76a013c081e65671a3447c29",
+  "derived_styles_sha256": "61a274d23a332737c73d7fff471fc4ea1a25ebe8e11d848be7d1dbd738f44588",
+  "sample_rate": 24000,
+  "sid": 0,
+  "threads": 2,
+  "provider": "cpu",
+  "frontend": "Piper eSpeak en-us direct codepoints with explicit Paprika override",
+  "status": "provisionally approved character; live qualification pending"
+}

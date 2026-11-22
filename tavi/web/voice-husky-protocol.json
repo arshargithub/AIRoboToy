@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "id": "paprika-voice-husky-v1",
+  "kind": "paprika_voice_character_check",
+  "display_order": [
+    "K",
+    "M",
+    "N",
+    "O"
+  ],
+  "voices": {
+    "K": "Retained 35% donor blend \u00b7 current favourite",
+    "M": "Retained Qwen design \u00b7 human-sounding, not husky per user",
+    "N": "New Qwen design \u00b7 low contralto / coarse grain target",
+    "O": "New Qwen design \u00b7 smoky / hoarse texture target"
+  },
+  "passages": {
+    "short_story": "Fox story",
+    "greeting": "Hello from Paprika"
+  },
+  "pronunciation": {
+    "name": "Paprika",
+    "target": "puh-PREE-kuh",
+    "ipa": "p\u0259\u02c8pri\u02d0k\u0259",
+    "method": "Explicit Kokoro phonemes; natural-language instruction for designed voices. Human listening still required."
+  },
+  "reference_feedback": {
+    "voice": "K",
+    "best_so_far": true,
+    "accepted": false,
+    "retain": [
+      "K",
+      "M"
+    ],
+    "source": "User chat, 2 November 2026",
+    "observations": {
+      "K": "Favourite so far; I/K sound more AI-like.",
+      "M": "Keep as a more human-sounding reference; high-pitched/chirpy, not husky.",
+      "L": "High-pitched/chirpy, opposite of husky; more human-sounding.",
+      "target_husky_voice_found": false
+    }
+  },
+  "method": "Exact K/M references versus two newly generated lower-register/grain targets; no pitch shift or rasp effects.",
+  "design_model": {
+    "repository": "mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-4bit",
+    "revision": "5c390979e4b93af5f2932f90742ca99c7dd04687",
+    "manifest_sha256": "aeeddb674979e4155ac03cd533c7e5a0b59e3a58de7575f458ba991633d58c7f",
+    "license": "Apache-2.0"
+  },
+  "design_settings": {
+    "memory_limit_bytes": 6442450944,
+    "cache_limit_bytes": 268435456,
+    "max_tokens": 350,
+    "temperature": 0.7,
+    "top_k": 50,
+    "top_p": 0.95,
+    "repetition_penalty": 1.05,
+    "per_clip_timeout_seconds": 180,
+    "library_versions": {
+      "mlx-audio": "0.6.3",
+      "mlx": "0.32.4",
+      "transformers": "5.22.1",
+      "numpy": "2.4.6"
+    }
+  },
+  "trials": [
+    {
+      "voice": "K",
+      "case": "short_story",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "original_reference_unchanged": false,
+      "pronunciation_override": null,
+      "preparation_ms": 5005.081625015009,
+      "id": "husky-1",
+      "src": "/voice-husky/sample-1.wav",
+      "sha256": "163e0c4c5e538bcc513c02252d01caab55898fb4aea0e1045e4e6e0ad0d1f22c",
+      "gain": 1,
+      "retained_audio_unchanged": true,
+      "source_protocol_id": "paprika-voice-direction-v1"
+    },
+    {
+      "voice": "K",
+      "case": "greeting",
+      "text": "Hi, I'm Paprika. What should we explore today? I think we can handle a little adventure.",
+      "original_reference_unchanged": false,
+      "pronunciation_override": "p\u0259\u02c8pri\u02d0k\u0259",
+      "preparation_ms": 3731.2704999931157,
+      "id": "husky-2",
+      "src": "/voice-husky/sample-2.wav",
+      "sha256": "746c29bb0b94591f9084069c59f4c1f35f1c999d79c0dc7f08539004ef5d2933",
+      "gain": 1,
+      "retained_audio_unchanged": true,
+      "source_protocol_id": "paprika-voice-direction-v1"
+    },
+    {
+      "voice": "M",
+      "case": "short_story",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "instruction": "A youthful adult female voice speaking American English with a naturally slightly raspy, textured timbre and a warm resonant core. She sounds confident and lively, with easy conversational energy, natural rhythm and expressive intonation. The light huskiness is part of her normal speaking voice.",
+      "seed": 71,
+      "preparation_ms": 3576.518959016539,
+      "duration_ms": 8160.0,
+      "tokens": 102,
+      "peak_memory_bytes": 5529007311,
+      "id": "husky-3",
+      "src": "/voice-husky/sample-3.wav",
+      "sha256": "5feab016a9a8b7abd0a6088b13ae5365731df19f6bdf1e7076491acb60a1473a",
+      "gain": 1,
+      "retained_audio_unchanged": true,
+      "source_protocol_id": "paprika-voice-direction-v1"
+    },
+    {
+      "voice": "M",
+      "case": "greeting",
+      "text": "Hi, I'm Paprika. What should we explore today? I think we can handle a little adventure.",
+      "instruction": "A youthful adult female voice speaking American English with a naturally slightly raspy, textured timbre and a warm resonant core. She sounds confident and lively, with easy conversational energy, natural rhythm and expressive intonation. The light huskiness is part of her normal speaking voice. Pronounce the name Paprika as puh-PREE-kuh, IPA /p\u0259\u02c8pri\u02d0k\u0259/. The first syllable is a short unstressed puh, not pah or pap; stress PREE, then a short unstressed kuh. Speak the name smoothly as one word.",
+      "seed": 71,
+      "pronunciation_target": "puh-PREE-kuh",
+      "pronunciation_ipa": "p\u0259\u02c8pri\u02d0k\u0259",
+      "preparation_ms": 3934.2606250138488,
+      "duration_ms": 8640.0,
+      "tokens": 108,
+      "peak_memory_bytes": 5741259077,
+      "id": "husky-4",
+      "src": "/voice-husky/sample-4.wav",
+      "sha256": "4facd1fcd2c40d549fa4be1c8bb1e7520a689f29bcb2a3a32b04f2914e76fa96",
+      "gain": 1,
+      "retained_audio_unchanged": true,
+      "source_protocol_id": "paprika-voice-direction-v1"
+    },
+    {
+      "voice": "N",
+      "case": "short_story",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "instruction": "An adult woman speaking American English in a naturally low contralto register. Her speaking voice is chest-resonant, dry and distinctly husky, with audible grain and a gentle coarse rasp throughout ordinary speech. She has a relaxed, grounded, confident delivery, with restrained pitch movement and a warm full-bodied tone. Clear normal-volume conversational speech, close and intimate, with occasional light vocal fry at phrase endings.",
+      "seed": 97,
+      "pronunciation_target": null,
+      "pronunciation_ipa": null,
+      "preparation_ms": 4817.371790995821,
+      "duration_ms": 10640.0,
+      "tokens": 133,
+      "peak_memory_bytes": 5886080589,
+      "id": "husky-5",
+      "src": "/voice-husky/sample-5.wav",
+      "sha256": "dd53d1e58e4e751202c28f8a80592bda6d58152bee796c5854ed2bc627756592",
+      "gain": 0.9815408151358929,
+      "retained_audio_unchanged": false,
+      "source_protocol_id": null
+    },
+    {
+      "voice": "N",
+      "case": "greeting",
+      "text": "Hi, I'm Paprika. What should we explore today? I think we can handle a little adventure.",
+      "instruction": "An adult woman speaking American English in a naturally low contralto register. Her speaking voice is chest-resonant, dry and distinctly husky, with audible grain and a gentle coarse rasp throughout ordinary speech. She has a relaxed, grounded, confident delivery, with restrained pitch movement and a warm full-bodied tone. Clear normal-volume conversational speech, close and intimate, with occasional light vocal fry at phrase endings. Pronounce the name Paprika as puh-PREE-kuh, IPA /p\u0259\u02c8pri\u02d0k\u0259/. The first syllable is a short unstressed puh, not pah or pap; stress PREE, then a short unstressed kuh. Speak the name smoothly as one word.",
+      "seed": 97,
+      "pronunciation_target": "puh-PREE-kuh",
+      "pronunciation_ipa": "p\u0259\u02c8pri\u02d0k\u0259",
+      "preparation_ms": 3884.9202919809613,
+      "duration_ms": 7680.0,
+      "tokens": 96,
+      "peak_memory_bytes": 5375893305,
+      "id": "husky-6",
+      "src": "/voice-husky/sample-6.wav",
+      "sha256": "533df795da3a9943e3fa8c5acc9133ff226be197ca8748276aadba8f448262aa",
+      "gain": 1.1120190875050653,
+      "retained_audio_unchanged": false,
+      "source_protocol_id": null
+    },
+    {
+      "voice": "O",
+      "case": "short_story",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "instruction": "A woman in her late twenties with a naturally gravelly, smoky speaking voice and a low-to-medium female register. Her vocal timbre has obvious rough texture, a soft hoarse edge and chest resonance. She speaks American English with casual confident presence, unhurried natural rhythm and understated dry humor. The rasp is audible in the voiced vowels while her words stay clear and conversational.",
+      "seed": 127,
+      "pronunciation_target": null,
+      "pronunciation_ipa": null,
+      "preparation_ms": 3854.12083400297,
+      "duration_ms": 8640.0,
+      "tokens": 108,
+      "peak_memory_bytes": 5711932013,
+      "id": "husky-7",
+      "src": "/voice-husky/sample-7.wav",
+      "sha256": "d3a1c1ce2228d1c361cfb22b36144d6c30d97119d8f4b295a520d584c3d63949",
+      "gain": 0.9449628926460075,
+      "retained_audio_unchanged": false,
+      "source_protocol_id": null
+    },
+    {
+      "voice": "O",
+      "case": "greeting",
+      "text": "Hi, I'm Paprika. What should we explore today? I think we can handle a little adventure.",
+      "instruction": "A woman in her late twenties with a naturally gravelly, smoky speaking voice and a low-to-medium female register. Her vocal timbre has obvious rough texture, a soft hoarse edge and chest resonance. She speaks American English with casual confident presence, unhurried natural rhythm and understated dry humor. The rasp is audible in the voiced vowels while her words stay clear and conversational. Pronounce the name Paprika as puh-PREE-kuh, IPA /p\u0259\u02c8pri\u02d0k\u0259/. The first syllable is a short unstressed puh, not pah or pap; stress PREE, then a short unstressed kuh. Speak the name smoothly as one word.",
+      "seed": 127,
+      "pronunciation_target": "puh-PREE-kuh",
+      "pronunciation_ipa": "p\u0259\u02c8pri\u02d0k\u0259",
+      "preparation_ms": 3493.8679999904707,
+      "duration_ms": 7600.0,
+      "tokens": 95,
+      "peak_memory_bytes": 5345222503,
+      "id": "husky-8",
+      "src": "/voice-husky/sample-8.wav",
+      "sha256": "21e538382321075facc369a292b35f10c6dac3a125bbcdcf50360f9bd8f29c86",
+      "gain": 0.875600585679936,
+      "retained_audio_unchanged": false,
+      "source_protocol_id": null
+    }
+  ],
+  "api_spend_usd": 0,
+  "microphone_used": false,
+  "limitations": [
+    "New prompts do not establish audible huskiness; the previous husky prompts failed human review.",
+    "Lower pitch and humanlike delivery are separate from huskiness.",
+    "Stable identity across passages and live performance remain unqualified."
+  ]
+}

@@ -77,7 +77,7 @@ ROBOT_UI_HTML = """
             border: 2px solid #0099ff;
             border-radius: 50%;
             opacity: 0;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.15s ease;
         }
         
         .listening-signal.active {
@@ -156,7 +156,7 @@ ROBOT_UI_HTML = """
             justify-content: center;
             gap: 4px;
             opacity: 0;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.15s ease;
         }
         
         .soundwave-container.active {
@@ -200,12 +200,52 @@ ROBOT_UI_HTML = """
             animation: spectrogram 1.5s linear infinite;
         }
         
+        /* Thinking Mode - Processing Animation */
+        .thinking-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        .thinking-container.active {
+            opacity: 1;
+        }
+
+        .thinking-dot {
+            width: 12px;
+            height: 12px;
+            background: #ffaa00;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #ffaa00;
+        }
+
+        .thinking-dot:nth-child(1) { animation: thinkingPulse 1s ease-in-out infinite; }
+        .thinking-dot:nth-child(2) { animation: thinkingPulse 1s ease-in-out infinite 0.15s; }
+        .thinking-dot:nth-child(3) { animation: thinkingPulse 1s ease-in-out infinite 0.3s; }
+
+        @keyframes thinkingPulse {
+            0%, 100% { transform: scale(0.5); opacity: 0.5; }
+            50% { transform: scale(1); opacity: 1; }
+        }
+
         /* State-specific styling */
         .state-listening {
             color: #0099ff;
             text-shadow: 0 0 20px #0099ff;
         }
         
+        .state-thinking {
+            color: #ffaa00;
+            text-shadow: 0 0 20px #ffaa00;
+        }
+
         .state-talking {
             color: #00ff00;
             text-shadow: 0 0 20px #00ff00;
@@ -262,6 +302,13 @@ ROBOT_UI_HTML = """
                 <div class="crosshairs"></div>
             </div>
             
+            <!-- Thinking Animation -->
+            <div class="thinking-container" id="thinkingContainer">
+                <div class="thinking-dot"></div>
+                <div class="thinking-dot"></div>
+                <div class="thinking-dot"></div>
+            </div>
+
             <!-- Talking Animation -->
             <div class="soundwave-container" id="soundwaveContainer">
                 <div class="soundwave-bar"></div>
@@ -290,30 +337,36 @@ ROBOT_UI_HTML = """
         
         const stateLabel = document.getElementById('stateLabel');
         const listeningSignal = document.getElementById('listeningSignal');
+        const thinkingContainer = document.getElementById('thinkingContainer');
         const soundwaveContainer = document.getElementById('soundwaveContainer');
         
         function updateState(state) {
+            showState(state);
+        }
+
+        function showState(state) {
             // Add brief glitch effect during transition
             stateLabel.classList.add('transition-glitch');
             setTimeout(() => stateLabel.classList.remove('transition-glitch'), 100);
             
+            // Hide all animations
+            listeningSignal.classList.remove('active');
+            thinkingContainer.classList.remove('active');
+            soundwaveContainer.classList.remove('active');
+
             if (state === 'talking') {
-                // Switch to talking mode
                 stateLabel.textContent = 'TALKING';
                 stateLabel.className = 'state-label state-talking';
-                
-                // Show soundwave, hide listening signal
-                listeningSignal.classList.remove('active');
                 soundwaveContainer.classList.add('active');
-                
+            } else if (state === 'thinking') {
+                stateLabel.textContent = 'THINKING';
+                stateLabel.className = 'state-label state-thinking';
+                thinkingContainer.classList.add('active');
             } else {
-                // All other states (ready, listening, thinking) -> LISTENING
+                // ready, listening
                 stateLabel.textContent = 'LISTENING';
                 stateLabel.className = 'state-label state-listening';
-                
-                // Show listening signal, hide soundwave
                 listeningSignal.classList.add('active');
-                soundwaveContainer.classList.remove('active');
             }
         }
         
@@ -340,8 +393,8 @@ ROBOT_UI_HTML = """
             updateState('listening');
         });
         
-        // Initialize with listening state
-        updateState('listening');
+        // Initialize with listening state (or ready before session starts)
+        showState('listening');
     </script>
 </body>
 </html>
@@ -390,6 +443,7 @@ class WebUIServer:
         self.running = False
         self.state_queue = queue.Queue()
         self.emit_thread = None
+        self._last_sent_state = None
     
     def index(self):
         """Serve the robot UI HTML page."""
@@ -416,10 +470,15 @@ class WebUIServer:
         while self.running:
             try:
                 state_value = self.state_queue.get(timeout=1.0)
+                # Skip duplicate emits; duplicate state events create unnecessary render churn.
+                if state_value == self._last_sent_state:
+                    self.state_queue.task_done()
+                    continue
                 if self.socketio and self.running:
                     try:
                         with self.socketio.server.app.app_context():
                             self.socketio.emit('state_update', {'state': state_value}, namespace='/')
+                            self._last_sent_state = state_value
                     except (RuntimeError, AssertionError) as e:
                         if "start_response" not in str(e):
                             pass
@@ -435,7 +494,9 @@ class WebUIServer:
         """Emit state update to all connected clients (thread-safe)."""
         if self.running:
             try:
-                self.state_queue.put_nowait(state.value)
+                new_state = state.value
+                if new_state != self._last_sent_state:
+                    self.state_queue.put_nowait(new_state)
             except queue.Full:
                 pass
             except Exception:

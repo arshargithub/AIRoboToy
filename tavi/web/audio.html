@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tavi · Local audio test</title>
+<style>:root{color-scheme:dark;font:17px system-ui;background:#141d24;color:#eaf2ef}body{max-width:820px;margin:40px auto;padding:0 24px}a{color:#bdf7d9}h1{font-size:2rem}p{line-height:1.6;color:#c2d0cf}button,select{font:inherit;padding:14px;border:1px solid #58716e;background:#263a3c;color:inherit;border-radius:10px;cursor:pointer}button:disabled{opacity:.4;cursor:default}.controls{display:flex;flex-wrap:wrap;gap:12px;margin:25px 0}#face{background:#203a3d;border-radius:35px;text-align:center;padding:30px;font-size:2rem}#face[data-speaking=true]{background:#3b3553}#status{font-size:1.3rem}meter{width:100%;height:24px}dl{display:grid;grid-template-columns:1fr 1fr;gap:14px}dd{text-align:right;margin:0}#error{color:#ffcdad}label{display:block;margin:20px 0}input{accent-color:#bdf7d9}#results{white-space:pre-wrap;font:14px monospace}button:focus-visible{outline:3px solid #bdf7d9}#cue{position:sticky;top:8px;z-index:10;background:#141d24;padding:12px;border:2px solid #bdf7d9;border-radius:10px}#cue:empty{display:none}fieldset{border:1px solid #58716e;border-radius:12px;padding:16px;margin:20px 0}legend{font-weight:600;padding:0 8px}.trial-choice{padding:16px;margin:10px 0;border:1px solid #58716e;border-radius:10px;cursor:pointer}.trial-choice:has(input:checked){background:#35534d;border-color:#bdf7d9}.trial-choice input{width:20px;height:20px;vertical-align:middle;margin-right:12px}</style>
+<a href="/">← State simulator</a><h1>Tavi local audio test</h1><p id="cue" role="status" aria-live="polite" style="font-size:1.5rem;font-weight:700;color:#bdf7d9"></p>
+<div id="face" data-speaking="false" aria-hidden="true">• ‿ •</div><p id="status" role="status" aria-live="polite">Microphone off</p>
+<p>Audio stays on this Mac and is never saved. Start the microphone, then play the reference and speak over it. Neural speech detection will stop playback. Say TAH-vee to try the experimental local name detector; its detection count appears below. Name detection currently fails our accuracy target. Conversation is not connected yet.</p>
+<div class="controls"><button id="start">Start microphone</button><button id="stop" disabled>Mute microphone</button><button id="play" disabled>Play reference</button><button id="cancel" disabled>Stop playback</button></div>
+<button id="wake-test" disabled>Run guided name test</button><p id="wake-status">The guided name test becomes available when a trial model passes development checks.</p>
+<label><input id="autostop" type="checkbox" checked> Automatically interrupt the reference on confirmed speech</label>
+<p>Leave automatic interruption checked for both tests below. Turning it off is only for observation runs.</p>
+<p>Choose a trial type before playing. Keep automatic interruption enabled. Speaking tests show a SPEAK NOW cue after 2, then 5, then 8 seconds. Say the phrase once; if it does not stop, let the clip finish.</p>
+<fieldset id="intent"><legend>Choose your test</legend>
+<label class="trial-choice"><input type="radio" name="intent" value="silent">Stay silent (echo test)</label>
+<label class="trial-choice"><input type="radio" name="intent" value="speak">Speak over it (interruption test)</label>
+</fieldset>
+<label for="volume">Reference volume <output id="volume-value" for="volume" aria-hidden="true">0.35</output> <input id="volume" type="range" min="0" max="1" step=".05" value=".35"></label>
+<label>Speech probability <meter id="probability" min="0" max="1" value="0"></meter></label>
+<p id="error" role="alert"></p><dl id="details"></dl>
+<p>Timing below estimates capture-frame processing to the stop command. It is <strong>not an independent measurement of when sound stopped</strong>. E1 still needs a real microphone/speaker test with annotated speech onset and audible output.</p>
+<button id="download">Download diagnostics (no audio)</button><pre id="results"></pre>
+<p>Use normal speaker volume. If Tavi interrupts its own reference without you speaking, note it as a false interruption. The test must pass with the speaker; headphones do not qualify echo cancellation.</p>
+<script src="/interruption.js"></script><script src="/guided-wake.js"></script><script src="/audio.js"></script></html>

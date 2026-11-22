@@ -1,0 +1,12 @@
+[project]
+name = "paprika-memory-hindsight"
+version = "0.1.0"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "hindsight-all-slim==1.2.0",
+  "hindsight-api-slim[local-onnx]==1.2.0",
+  "hindsight-client==1.2.0",
+  "pg0-embedded==0.16.1",
+]
+[tool.uv]
+package = false

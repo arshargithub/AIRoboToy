@@ -16,6 +16,12 @@ openai>=2.8.0
 websocket-client>=1.6.0
 scipy>=1.16.0  # For audio resampling (16kHz -> 24kHz)
 
+# Speaker voice recognition (ECAPA-TDNN)
+speechbrain>=1.0.0
+
+# Hindsight memory API
+requests>=2.31.0
+
 # Configuration
 PyYAML>=6.0.0
 python-dotenv>=1.0.0

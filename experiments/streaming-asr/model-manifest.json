@@ -1,0 +1,220 @@
+{
+  "package": "moonshine-voice",
+  "version": "0.1.5",
+  "model": "medium-streaming-en",
+  "model_arch": 5,
+  "source": "https://download.moonshine.ai/model/medium-streaming-en/quantized_26_08_21",
+  "license": "MIT",
+  "catalog": {
+    "base_url": "https://download.moonshine.ai/model/medium-streaming-en/quantized_26_08_21",
+    "files": [
+      {
+        "name": "adapter.ort",
+        "url": "https://download.moonshine.ai/model/medium-streaming-en/quantized_26_08_21/adapter.ort",
+        "size": 3651296,
+        "checksum": "Ds3Hsg==",
+        "checksum_type": "crc32c"
+      },
+      {
+        "name": "cross_kv.ort",
+        "url": "https://download.moonshine.ai/model/medium-streaming-en/quantized_26_08_21/cross_kv.ort",
+        "size": 11643776,
+        "checksum": "liqlOg==",
+        "checksum_type": "crc32c"
+      },
+      {
+        "name": "decoder_kv.ort",
+        "url": "https://download.moonshine.ai/model/medium-streaming-en/quantized_26_08_21/decoder_kv.ort",
+        "size": 146972408,
+        "checksum": "GPnzeQ==",
+        "checksum_type": "crc32c"
+      },
+      {
+        "name": "encoder.ort",
+        "url": "https://download.moonshine.ai/model/medium-streaming-en/quantized_26_08_21/encoder.ort",
+        "size": 94705376,
+        "checksum": "yWvDwA==",
+        "checksum_type": "crc32c"
+      },
+      {
+        "name": "frontend.model.ort",
+        "url": "https://download.moonshine.ai/model/medium-streaming-en/quantized_26_08_21/frontend.model.ort",
+        "size": 28720,
+        "checksum": "k1kKsQ==",
+        "checksum_type": "crc32c"
+      },
+      {
+        "name": "frontend.weights.ort",
+        "url": "https://download.moonshine.ai/model/medium-streaming-en/quantized_26_08_21/frontend.weights.ort",
+        "size": 11889560,
+        "checksum": "w5QjIA==",
+        "checksum_type": "crc32c"
+      },
+      {
+        "name": "streaming_config.json",
+        "url": "https://download.moonshine.ai/model/medium-streaming-en/quantized_26_08_21/streaming_config.json",
+        "size": 513,
+        "checksum": "+1bE9Q==",
+        "checksum_type": "crc32c"
+      },
+      {
+        "name": "tokenizer.bin",
+        "url": "https://download.moonshine.ai/model/medium-streaming-en/quantized_26_08_21/tokenizer.bin",
+        "size": 249974,
+        "checksum": "B7s10Q==",
+        "checksum_type": "crc32c"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": ".tavi/models/moonshine-medium-streaming-en/adapter.ort",
+      "size": 3651296,
+      "sha256": "3f2a287def57cc094367a0eec3c4f5fc36a32ec420e86764b696920991b20281"
+    },
+    {
+      "path": ".tavi/models/moonshine-medium-streaming-en/cross_kv.ort",
+      "size": 11643776,
+      "sha256": "642f6e21cd305be79342207c6f9e6b681d469d55bc48c72b27b84846fb71fd1e"
+    },
+    {
+      "path": ".tavi/models/moonshine-medium-streaming-en/decoder_kv.ort",
+      "size": 146972408,
+      "sha256": "193bb366492b74fc4ad338c6778e8d8eb916aaa11b5aa264f9057f4db7759486"
+    },
+    {
+      "path": ".tavi/models/moonshine-medium-streaming-en/encoder.ort",
+      "size": 94705376,
+      "sha256": "12915e76ebac7dd287c5ea63965d06103a53ba1ce242a4a34f318f3958c60c37"
+    },
+    {
+      "path": ".tavi/models/moonshine-medium-streaming-en/frontend.model.ort",
+      "size": 28720,
+      "sha256": "95768855c70c8251eeecc05fedf69999da1b8ab16f605c9f457fd3354b0ad6b5"
+    },
+    {
+      "path": ".tavi/models/moonshine-medium-streaming-en/frontend.weights.ort",
+      "size": 11889560,
+      "sha256": "5ac941f490cbe035b335b99a414cc393d62d4c6f9f2423495b286870d271d709"
+    },
+    {
+      "path": ".tavi/models/moonshine-medium-streaming-en/streaming_config.json",
+      "size": 513,
+      "sha256": "28e83b7a28e91472692a035e0dae3116422ae43aeb2bef5ed822c44ce89b88af"
+    },
+    {
+      "path": ".tavi/models/moonshine-medium-streaming-en/tokenizer.bin",
+      "size": 249974,
+      "sha256": "6884b35fd6377d4c4d32336a0bc152f36b64d1e45b6503683cdc238250a8472d"
+    }
+  ],
+  "runtime": "Low-level local-files API, no microphone/downloader/spelling or speaker models",
+  "wheel_sha256": "9866b1956d12fff11923ad42f1140bcb314bf05bf8d8576fb7b3aa819ec40e51",
+  "runtime_files": [
+    {
+      "relative": "__init__.py",
+      "sha256": "d913b5d44f564c2afc999216687aa03e66577a392b2bb088a67e3894901de04e"
+    },
+    {
+      "relative": "agent_flow.py",
+      "sha256": "f9de8f5ae0fd7556b60050b49561a14059e08d30712613db869254c30a028638"
+    },
+    {
+      "relative": "alphanumeric_listener.py",
+      "sha256": "aeac187449c282b4e93e08ba7a2f428181cd0ccba82e0e0b3209973667b717d4"
+    },
+    {
+      "relative": "cached_embeddings.py",
+      "sha256": "2e379994a45881f46355e9e96f7043be87598a1e4e53f4dd8660cd6f7cc8c1f5"
+    },
+    {
+      "relative": "cli.py",
+      "sha256": "1da34b86e0862b0f63d22b3b47a5145fdb630576bca974ebbd20e73a45f17706"
+    },
+    {
+      "relative": "download.py",
+      "sha256": "d55833e734b041d656bd3ad393d3fde5a1dbb0ad63b15b0d4827782b1264642f"
+    },
+    {
+      "relative": "download_file.py",
+      "sha256": "b54b70037f8af1ad9d85bcd54960b399200f7fd6489eb3b36b7a83cb13fe86d3"
+    },
+    {
+      "relative": "embedding_model.py",
+      "sha256": "67d28078af95f60e9576808fc70ae7189db0290ee4111bc497532027fd5a2022"
+    },
+    {
+      "relative": "errors.py",
+      "sha256": "90eb15bb1c5c60f687b08af9efa1bee6d8271b55b80c877a836a0981718cbf0f"
+    },
+    {
+      "relative": "g2p.py",
+      "sha256": "a6fd8317f3852343c54a3712d725a634a6420d27f6ab10d0c5cd4f2c69e18a66"
+    },
+    {
+      "relative": "libmoonshine.dylib",
+      "sha256": "1453a6c1c9072f3d05e9e5ae6ff423fae839e56631c5efb12bbd5c0280d04399"
+    },
+    {
+      "relative": "libonnxruntime.1.23.2.dylib",
+      "sha256": "480790a978a48ad3e06ce86b6025e037bd70221637f5c104a8dde19617364cf4"
+    },
+    {
+      "relative": "lora/__init__.py",
+      "sha256": "b0b1ee6b7d52d320437c03f52c6cd747f8bb4ffba2ea69f8119a6ee363c0f736"
+    },
+    {
+      "relative": "lora/__main__.py",
+      "sha256": "9297e563549b0746181454fe7d5fe15e94744aa7e87d1ae1fc036208ef8d033d"
+    },
+    {
+      "relative": "lora/_deps.py",
+      "sha256": "ca35363731afd37f4c3f1088bc3dcef4027cede39165070211e0b399ddc29623"
+    },
+    {
+      "relative": "lora/adapter.py",
+      "sha256": "e28b6775ac129bafa7b6887bbb2fc0ac03b96165cdb778dcfe6c7d172fef5725"
+    },
+    {
+      "relative": "lora/data.py",
+      "sha256": "29640241528273b2f47825968fcb9a43b6364b10bd2fa0c5c8c4641b6108dcd0"
+    },
+    {
+      "relative": "lora/export.py",
+      "sha256": "47d2f82f7e8ebf4f679882ad32dd94bb7dbcbd771baced164069b2bf74999f27"
+    },
+    {
+      "relative": "lora/manifest.py",
+      "sha256": "900f642d8564b542a805040b05a950dc604650af8da401359fdb63c0db7e4ace"
+    },
+    {
+      "relative": "lora/train.py",
+      "sha256": "22639bb1241dd558e39ff0bc5beb28635994c174cc106f090d3674c03a51e3bb"
+    },
+    {
+      "relative": "mic_transcriber.py",
+      "sha256": "bb6ed40a3f32cc4241ac9414f62624d45e56b9a185d0073180bde96de260499d"
+    },
+    {
+      "relative": "moonshine_api.py",
+      "sha256": "19e1a22cd7087c8c70802322e80ebad560101428a10a9153f22571362ee51db6"
+    },
+    {
+      "relative": "transcriber.py",
+      "sha256": "d96159533259267aa9ce7bd98721ebbdd375431f806fa06fdb3fb1c5a40e435f"
+    },
+    {
+      "relative": "tts.py",
+      "sha256": "c53227450bf22a62ae1312173f06be030ce9d28b7c1370fa18f38522530a64cf"
+    },
+    {
+      "relative": "utils.py",
+      "sha256": "0175e37e2fc69888cb230ed4390f9f22589bc4469e646b1a5e3d3ad96a6fa391"
+    },
+    {
+      "relative": "voice_clone.py",
+      "sha256": "3794696a7390d995d362a03d5aa2e512bb5aade1277d089454190eb09ad235ea"
+    }
+  ],
+  "license_sha256": "5da20e09cad096fb153b6c80b26c270027f9601285c498e571fc74fee5ab7157"
+}

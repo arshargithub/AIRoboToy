@@ -1,0 +1,12 @@
+{
+  "files": [
+    {
+      "path": "/Volumes/MovieFactorySSD/PaprikaVoice/models/3dspeaker_speech_campplus_sv_en_voxceleb_16k.onnx",
+      "sha256": "357a834f702b80161e5b981182c038e18553c1f2ca752ed6cec2052365d4129b"
+    },
+    {
+      "path": ".tavi/models/silero_vad.onnx",
+      "sha256": "1a153a22f4509e292a94e67d6f9b85e8deb25b4988682b7e174c65279d8788e3"
+    }
+  ]
+}

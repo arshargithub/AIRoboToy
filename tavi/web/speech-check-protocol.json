@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "protocol_id": "paprika-speech-capture-v1",
+  "kind": "paprika_private_speech_check",
+  "sample_rate": 16000,
+  "frame_samples": 512,
+  "clip_frames": 250,
+  "cue_frame": 64,
+  "read_ms": 3000,
+  "reference_sha256": "c1e0498d31320b03221d4015d0df3e57d17812dc721799eb0d36bc594984c653",
+  "models": {
+    "tiny.en": {
+      "path": ".tavi/models/whisper-tiny-en",
+      "files": {
+        "model.bin": "1a5afae06a4db91c975c9a9d78be5cc110ee4ea022ad57d55492e4550e936b2a",
+        "config.json": "14b1b421a90349bc551b881461426b561a874049cb9e4c4864f2ca384f6a7cc5",
+        "tokenizer.json": "929c5252409436dce1b38a75d1abbcb5e132d170d8e324e4e04ed915fa2d22df",
+        "vocabulary.txt": "ff77588746d3a2595d32ab5b69ffd7b95ce2441ac57533cb66fc3eb575a115cf"
+      }
+    },
+    "base.en": {
+      "path": ".tavi/models/whisper-base-en",
+      "files": {
+        "model.bin": "2a166925539a16005f14ff328359f9b9adb9dc4fb631bb3b227526862e93e2ef",
+        "config.json": "f3bc3821e9fc76a27bae538e11ae5b677dcdd352b4600429ce7951d398569aeb",
+        "tokenizer.json": "929c5252409436dce1b38a75d1abbcb5e132d170d8e324e4e04ed915fa2d22df",
+        "vocabulary.txt": "ff77588746d3a2595d32ab5b69ffd7b95ce2441ac57533cb66fc3eb575a115cf"
+      }
+    }
+  },
+  "asr": {
+    "language": "en",
+    "beam_size": 1,
+    "temperature": 0,
+    "condition_on_previous_text": false,
+    "vad_filter": false
+  },
+  "prompt": "Names: Tavi, Paprika.",
+  "trials": [
+    {
+      "number": 1,
+      "condition": "quiet",
+      "phrase": "Wait, make it a space adventure instead.",
+      "category": "request"
+    },
+    {
+      "number": 2,
+      "condition": "overlap",
+      "phrase": "Please make the little boat yellow, then stop.",
+      "category": "request"
+    },
+    {
+      "number": 3,
+      "condition": "quiet",
+      "phrase": "Change the ending so the penguin finds three keys.",
+      "category": "request"
+    },
+    {
+      "number": 4,
+      "condition": "overlap",
+      "phrase": "Wait, make it a space adventure instead.",
+      "category": "request"
+    },
+    {
+      "number": 5,
+      "condition": "quiet",
+      "phrase": "Please make the little boat yellow, then stop.",
+      "category": "request"
+    },
+    {
+      "number": 6,
+      "condition": "overlap",
+      "phrase": "Change the ending so the penguin finds three keys.",
+      "category": "request"
+    },
+    {
+      "number": 7,
+      "condition": "quiet",
+      "phrase": "",
+      "category": "silence"
+    },
+    {
+      "number": 8,
+      "condition": "overlap",
+      "phrase": "",
+      "category": "silence"
+    }
+  ]
+}

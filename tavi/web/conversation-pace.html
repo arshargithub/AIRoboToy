@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Paprika · Conversation pace</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f1e9;color:#263831;font:18px/1.55 system-ui,sans-serif}main{max-width:900px;margin:48px auto;padding:0 24px 60px}h1{font-size:clamp(30px,5vw,44px);line-height:1.15}h2{font-size:24px}p{margin:12px 0}.muted{color:#52615a}.card{padding:24px;background:white;border:1px solid #dedfd6;border-radius:20px;margin:22px 0}.question{font-weight:650;font-size:24px;border-left:4px solid #ba7851;padding-left:16px}.status{position:sticky;top:10px;z-index:1;padding:16px;background:#fff9e9;border:1px solid #dccda5;border-radius:12px}.speaking{background:#dceee8}.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0}button{background:#315e51;border:0;border-radius:12px;color:white;padding:14px 20px;font:600 16px system-ui;cursor:pointer;margin:4px 8px 4px 0}button.secondary{background:#e5ece6;color:#273b32}button:disabled{opacity:.45;cursor:default}label{display:block;margin:12px 0}input[type=radio]{margin-right:10px}input[type=range]{width:150px}textarea{width:100%;min-height:90px;padding:12px;border:1px solid #aab5ad;border-radius:10px;font:16px/1.5 system-ui}details{margin-top:16px}summary{cursor:pointer;color:#52615a}.error{padding:14px;color:#842f26;background:#fff0eb;border-radius:10px}fieldset{border:0;margin:12px 0;padding:0}legend{font-weight:650}output{font-weight:bold;min-width:42px}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #c58b58;outline-offset:3px}
+
+.status{display:flex;align-items:center;gap:20px;min-height:105px}
+.status.thinking{background:#f0ebfb;border-color:#a48bc8}
+.status.thinking::before{content:'● ● ●';display:block;flex-shrink:0;font-size:26px;letter-spacing:4px;color:#71528f;animation:thinking-breathe 1.3s ease-in-out infinite}
+.status.speaking::before{content:'▂▆▃█▅';display:block;flex-shrink:0;font-size:32px;letter-spacing:3px;color:#315e51;animation:speech-bounce .55s ease-in-out infinite alternate}
+@keyframes thinking-breathe{50%{opacity:.4;transform:translateY(-4px)}}
+@keyframes speech-bounce{to{transform:scaleY(.55)}}
+@media(prefers-reduced-motion:reduce){.status.thinking::before,.status.speaking::before{animation:none}}
+@media(max-width:500px){.status{gap:12px}.status.thinking::before,.status.speaking::before{font-size:23px;letter-spacing:1px}}
+</style></head><body><main id="app"><h1>Loading the listening check…</h1></main><script src="/conversation-pace.js" type="module"></script></body></html>

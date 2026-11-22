@@ -1,41 +1,21 @@
-# AIRoboToy
+# AIRoboToy and Paprika
 
-Johnny Robot - AI-powered conversational robot using OpenAI Realtime API.
+Paprika is a Mac voice companion built around a local Python core and an Electron window. The companion listens for its name, transcribes locally with Whisper, and speaks with Kokoro. Online replies are optional and use accepted conversation text. The `robo_core` directory retains the earlier prototype.
 
-## Overview
+The branch contains the app source, dependency locks, model setup scripts and synthetic test fixtures. Household roles use example identifiers. Saved household profiles, recordings, private experiment records and local service configuration belong to the installation that created them. Some experiment scripts require separately retained inputs and will stop without them.
 
-Real-time voice interaction robot with:
-- Voice Activity Detection (VAD)
-- OpenAI Realtime API integration
-- Web-based UI with retro animations
-- Audio playback and microphone streaming
+## Offline simulator
 
-## Setup
+From the repository root, use Python 3.11 to start a simulator with typed input:
 
-1. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+```sh
+python3.11 -m tavi
+```
 
-2. Configure environment:
-   ```bash
-   cp .env.example .env
-   # Edit .env with your OpenAI API key
-   ```
+Open `http://127.0.0.1:8765/`. Use the simulator with fictional inputs. The simulator settings and its ledger are local to the checkout.
 
-3. Run:
-   ```bash
-   python run_robot.py
-   ```
+## Mac development build
 
-## Architecture
+The desktop code is in `desktop/`. Use the root `uv.lock` for the `.venv-tavi` environment and the locks in `experiments/asr-mlx/` and `experiments/k-speech/` for `.venv-asr-mlx` and `.venv-k-speech`. The associated extras and provisioning notes are in the [Mac setup guide](docs/MAC_SETUP.md).
 
-- **VAD**: Local voice activity detection
-- **Realtime API**: OpenAI streaming audio + LLM
-- **Audio**: PyAudio for mic input and speaker output
-- **UI**: Flask + WebSocket for real-time state visualization
-
-## Memory System
-
-Memory functionality (Hindsight integration) is managed in a separate repository:
-- **Hindsight Infrastructure**: [HindsightRoboMemSetup](https://github.com/arshargithub/HindsightRoboMemSetup)
+The Electron development bundle starts the core from the checkout recorded at build time. The Mac app expects an existing local spending ledger, local model files and the configured external volume. Restore an existing installation's ledger before enabling online replies. Model setup scripts download pinned weights separately from source control.

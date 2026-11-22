@@ -1,0 +1,11 @@
+{
+  "versions": {
+    "numpy": "2.4.2",
+    "onnxruntime": "1.24.2",
+    "sherpa-onnx": "2.0.1"
+  },
+  "provider": "CPUExecutionProvider",
+  "embedding_threads": 2,
+  "vad_threads": 1,
+  "old_household_recordings_used": false
+}

@@ -1,7 +1,9 @@
 """
 Simplified robot pipeline using OpenAI Realtime API.
 Uses local VAD as a cost gate, then activates Realtime API for seamless voice conversations.
+Integrates speaker voice identification and Hindsight memory.
 """
+import os
 import time
 import threading
 import numpy as np
@@ -13,6 +15,8 @@ from robo_core.utils.logger import get_logger
 from robo_core.utils.config_loader import load_config, get_api_key
 from robo_core.ui.robot_state import RobotState, RobotStateManager
 from robo_core.ui.web_ui_server import WebUIServer
+from robo_core.identity import SpeakerEncoder, SpeakerStore, SpeakerIdentifier
+from robo_core.memory import HindsightClient
 
 logger = get_logger(__name__)
 
@@ -81,11 +85,154 @@ class RealtimePipeline:
         self.response_audio_lock = threading.Lock()
         self.response_thread = None
         self.playing_response = False
-        self._stop_playback = threading.Event()  # Event to signal playback thread to stop
+        self._stop_playback = threading.Event()
+        self._response_done = threading.Event()
+        self._playback_generation = 0
+
+        # --- Voice identity ---
+        identity_config = config.get("identity", {})
+        self.identity_enabled = identity_config.get("enabled", False)
+        self.speaker_identifier = None
+        if self.identity_enabled:
+            encoder = SpeakerEncoder(
+                model_source=identity_config.get(
+                    "model", "speechbrain/spkrec-ecapa-voxceleb"
+                ),
+            )
+            store = SpeakerStore(
+                db_path=os.path.expanduser(
+                    identity_config.get("voiceprint_db", "~/.johnny/voiceprints.db")
+                ),
+            )
+            self.speaker_identifier = SpeakerIdentifier(
+                encoder=encoder,
+                store=store,
+                sample_rate=audio_config.get("sample_rate", 16000),
+                min_audio_seconds=identity_config.get("min_audio_seconds", 2.0),
+                similarity_threshold=identity_config.get("similarity_threshold", 0.75),
+            )
+            logger.info(
+                "Voice identity enabled (%d enrolled speakers)",
+                store.count,
+            )
+
+        # --- Hindsight memory ---
+        memory_config = config.get("memory", {})
+        self.memory_enabled = memory_config.get("enabled", False)
+        self.hindsight = None
+        if self.memory_enabled:
+            api_url = (
+                os.environ.get("HINDSIGHT_API_URL")
+                or memory_config.get("hindsight_api_url", "")
+            )
+            if api_url:
+                self.hindsight = HindsightClient(
+                    base_url=api_url,
+                    bank_id=memory_config.get("bank_id", "johnny-robot"),
+                )
+                self.recall_limit = memory_config.get("recall_limit", 10)
+                self.retain_context = memory_config.get(
+                    "retain_context", "robot conversation"
+                )
+                logger.info("Hindsight memory enabled (url=%s)", api_url)
+            else:
+                logger.warning(
+                    "Memory enabled but no HINDSIGHT_API_URL configured -- disabling"
+                )
+                self.memory_enabled = False
+
+        # Per-turn tracking for identity + memory
+        self._current_speaker: str | None = None
+        self._last_user_transcript: str | None = None
+        self._last_robot_transcript: str | None = None
         
         # Setup event handlers
         self._setup_event_handlers()
+
+    def _set_state(self, new_state: RobotState):
+        """Set backend state and emit to UI atomically."""
+        self.state_manager.set_state(new_state)
+        if self.ui_enabled:
+            self.web_ui_server.emit_state_update(new_state)
     
+    # ------------------------------------------------------------------
+    # Identity + Memory helpers (run in background threads)
+    # ------------------------------------------------------------------
+
+    def _enrich_session(self) -> None:
+        """Resolve speaker identity + recall memories, then update the session prompt.
+
+        Called from a background thread right after input_audio_buffer.committed.
+        """
+        speaker_name = None
+        memories_text = None
+
+        # 1) Resolve speaker
+        if self.speaker_identifier:
+            result = self.speaker_identifier.result
+            if result and result.is_known:
+                speaker_name = result.name
+                self._current_speaker = speaker_name
+                logger.info("Enriching session for speaker: %s", speaker_name)
+            else:
+                self._current_speaker = None
+
+        # 2) Recall memories for this speaker
+        if self.memory_enabled and self.hindsight and speaker_name:
+            try:
+                tag = f"user:{speaker_name}"
+                memories = self.hindsight.recall(
+                    query=f"What do I know about {speaker_name}?",
+                    tags=[tag],
+                    limit=self.recall_limit,
+                )
+                if memories:
+                    lines = []
+                    for mem in memories:
+                        fact = mem.get("fact") or mem.get("content") or mem.get("text", "")
+                        if fact:
+                            lines.append(f"- {fact}")
+                    if lines:
+                        memories_text = "\n".join(lines)
+                        logger.info("Recalled %d memories for %s", len(lines), speaker_name)
+            except Exception:
+                logger.exception("Memory recall failed")
+
+        # 3) Update session prompt if we have anything to inject
+        if speaker_name or memories_text:
+            self.realtime_client.update_session(
+                speaker_name=speaker_name,
+                memories=memories_text,
+            )
+
+    def _retain_turn(self) -> None:
+        """Retain the completed conversation turn to Hindsight."""
+        if not self.memory_enabled or not self.hindsight:
+            return
+
+        user_text = self._last_user_transcript
+        robot_text = self._last_robot_transcript
+        if not user_text and not robot_text:
+            return
+
+        speaker = self._current_speaker or "unknown"
+        parts = []
+        if user_text:
+            parts.append(f"{speaker.title()}: {user_text}")
+        if robot_text:
+            parts.append(f"Johnny: {robot_text}")
+        content = "\n".join(parts)
+
+        tags = [f"user:{speaker}"]
+        try:
+            self.hindsight.retain(
+                content=content,
+                context=self.retain_context,
+                tags=tags,
+            )
+        except Exception:
+            logger.exception("Memory retain failed")
+
     def _setup_event_handlers(self):
         """Setup Realtime API event handlers for state transitions."""
         
@@ -93,11 +240,20 @@ class RealtimePipeline:
             """Local VAD detected speech - transition to LISTENING."""
             logger.info(f"EVENT: input_audio_buffer.speech_started - {event}")
             
-            # CRITICAL: Ignore speech detection while robot is speaking
-            # This prevents feedback loop where robot's own voice triggers new responses
+            # CRITICAL: Ignore speech detection while robot is speaking OR thinking.
+            # While THINKING, new speech_started events can cause UI/state churn
+            # (LISTENING <-> THINKING) before the current response resolves.
             current_state = self.state_manager.get_state()
-            if current_state == RobotState.TALKING:
-                logger.debug("Ignoring speech_started event - robot is currently speaking")
+            if current_state in (RobotState.TALKING, RobotState.THINKING):
+                logger.debug(
+                    "Ignoring speech_started event - robot is currently %s",
+                    current_state.value
+                )
+                return
+            if current_state == RobotState.LISTENING:
+                # Realtime can emit speech_started repeatedly within same turn.
+                # Re-emitting LISTENING floods UI queue and causes visual lag drift.
+                logger.debug("Ignoring speech_started event - already LISTENING")
                 return
             
             if not self.realtime_session_active:
@@ -112,26 +268,32 @@ class RealtimePipeline:
                     logger.error(f"✗ Failed to activate Realtime API session: {e}", exc_info=True)
                     return
             
-            # Update state to LISTENING
             logger.info("STATE: READY → LISTENING")
-            self.state_manager.set_state(RobotState.LISTENING)
-            if self.ui_enabled:
-                self.web_ui_server.emit_state_update(RobotState.LISTENING)
+            self._set_state(RobotState.LISTENING)
+
+            # Reset identity buffer for new turn
+            if self.speaker_identifier:
+                self.speaker_identifier.reset()
+            self._last_user_transcript = None
+            self._last_robot_transcript = None
         
         def on_input_committed(event):
             """Input audio committed - transition to THINKING."""
             logger.info(f"EVENT: input_audio_buffer.committed - {event}")
             if self.realtime_session_active:
+                self._response_done.clear()
                 logger.info("STATE: LISTENING → THINKING")
-                self.state_manager.set_state(RobotState.THINKING)
-                if self.ui_enabled:
-                    self.web_ui_server.emit_state_update(RobotState.THINKING)
+                self._set_state(RobotState.THINKING)
                 
-                # Create response to get audio output
-                # The Realtime API should auto-create responses, but let's ensure it
                 item_id = event.get("item_id")
                 if item_id:
                     logger.info(f"Input committed for item {item_id}, waiting for response...")
+
+                # Inject speaker identity + recalled memories into the session.
+                # Runs in a background thread to avoid blocking the event loop.
+                threading.Thread(
+                    target=self._enrich_session, daemon=True
+                ).start()
         
         def on_response_created(event):
             """Response created - log it."""
@@ -149,15 +311,23 @@ class RealtimePipeline:
         
         def on_response_audio_delta(event):
             """Response audio chunk received - transition to TALKING and play audio."""
-            audio_size = len(event.get("delta", "")) if event.get("delta") else 0
+            audio_payload = event.get("delta") or event.get("audio")
+            if isinstance(audio_payload, str):
+                audio_size = len(audio_payload)
+            elif isinstance(audio_payload, (bytes, bytearray)):
+                audio_size = len(audio_payload)
+            else:
+                audio_size = 0
             logger.debug(f"EVENT: response.audio.delta - received {audio_size} bytes of audio")
+
+            # Ignore empty audio events to avoid starting playback threads with no data.
+            if audio_size <= 0:
+                return
             
             # IMMEDIATE TRANSITION: Switch to TALKING as soon as we get ANY audio data
             if not self.playing_response and audio_size > 0:
                 logger.info("STATE: THINKING → TALKING (audio response started)")
-                self.state_manager.set_state(RobotState.TALKING)
-                if self.ui_enabled:
-                    self.web_ui_server.emit_state_update(RobotState.TALKING)
+                self._set_state(RobotState.TALKING)
             
             # The audio chunk is already queued by _handle_event before this handler runs
             if not self.playing_response:
@@ -190,27 +360,22 @@ class RealtimePipeline:
                 
                 # Start new response playback thread
                 logger.info("Starting audio playback thread...")
-                self.response_thread = threading.Thread(target=self._play_response_audio, daemon=True)
+                self._playback_generation += 1
+                generation = self._playback_generation
+                self.response_thread = threading.Thread(
+                    target=self._play_response_audio,
+                    args=(generation,),
+                    daemon=True
+                )
                 self.response_thread.start()
-        
-        def on_response_output_audio_delta(event):
-            """Response output audio delta received - same handling as audio delta."""
-            audio_size = len(event.get("delta", "")) if event.get("delta") else 0
-            logger.debug(f"EVENT: response.output_audio.delta - received {audio_size} bytes of audio")
-            # Treat same as audio delta
-            on_response_audio_delta(event)
-        
-        def on_response_output_audio(event):
-            """Response output audio received - same handling as delta."""
-            logger.debug(f"EVENT: response.output_audio")
-            # Treat same as audio delta
-            on_response_audio_delta(event)
         
         def on_response_done(event):
             """Response complete - transition back to LISTENING."""
+            self._response_done.set()
             response = event.get("response", {})
             status = response.get("status", "")
             queue_size = self.realtime_client.get_queue_size()
+            has_active_playback_thread = self.response_thread is not None and self.response_thread.is_alive()
             logger.info(f"EVENT: response.done - status: {status}, audio queue size: {queue_size}")
             
             # If response was cancelled, stop playback immediately
@@ -222,25 +387,69 @@ class RealtimePipeline:
                 self.playing_response = False
                 # Don't clear queue - cancelled responses might have valid audio that should play
                 # The next response will handle clearing if needed
+                # If cancellation happened before any audio/playback thread started,
+                # transition immediately so we don't get stuck in THINKING.
+                if queue_size == 0 and not has_active_playback_thread and self.realtime_session_active:
+                    logger.info("Cancelled response with no playback thread - returning to LISTENING")
+                    self._set_state(RobotState.LISTENING)
+            elif status == "failed":
+                # Failed responses may produce no audio delta, which means playback thread
+                # never starts. In that case we must transition out of THINKING immediately.
+                logger.warning("Response failed - returning to LISTENING")
+                self._stop_playback.set()
+                self.player.stop()
+                self.playing_response = False
+                if self.realtime_session_active:
+                    self._set_state(RobotState.LISTENING)
             else:
                 # For completed responses, DON'T set playing_response = False immediately
                 # Let the playback thread drain the queue first
                 # It will exit when queue is empty and it's waited long enough
                 logger.info(f"Response completed - keeping playback active to drain {queue_size} queued chunks")
+                # If no playback is active and queue is empty, there is nothing to drain.
+                # Transition now to avoid lingering in THINKING.
+                if queue_size == 0 and not self.playing_response and self.realtime_session_active:
+                    logger.info("Response completed with no audio - returning to LISTENING")
+                    self._set_state(RobotState.LISTENING)
             
             # Only set playing_response = False if cancelled, otherwise let thread drain queue
-            if status == "cancelled":
+            if status in ("cancelled", "failed"):
                 self.playing_response = False
             
             self.last_interaction_time = time.time()
             
-            # Let the audio playback thread handle state transitions
-            # This prevents conflicting state changes
-            if status == "cancelled":
+            # Extract robot transcript from response output
+            if status == "completed":
+                for item in response.get("output", []):
+                    if item.get("type") == "message":
+                        for part in item.get("content", []):
+                            transcript = part.get("transcript")
+                            if transcript:
+                                self._last_robot_transcript = transcript
+                                logger.info(
+                                    "Robot transcript: %s",
+                                    transcript[:120],
+                                )
+
+                # Retain conversation turn to Hindsight (background)
+                threading.Thread(
+                    target=self._retain_turn, daemon=True
+                ).start()
+
+            if status == "cancelled" and has_active_playback_thread:
                 logger.info("Response cancelled - audio thread will handle state transition")
+            elif status == "cancelled":
+                logger.info("Response cancelled - no active playback thread, transitioned immediately")
             else:
                 logger.info(f"Response completed - audio thread will transition back when playback finishes")
         
+        def on_input_transcription(event):
+            """User speech transcript received."""
+            transcript = event.get("transcript", "")
+            if transcript:
+                self._last_user_transcript = transcript
+                logger.info("User transcript: %s", transcript[:120])
+
         def on_conversation_end(event):
             """Conversation ended - close session and return to READY."""
             self._close_session()
@@ -251,57 +460,52 @@ class RealtimePipeline:
         self.realtime_client.on_event("response.created", on_response_created)
         self.realtime_client.on_event("response.output_item.added", on_response_output_item_added)
         self.realtime_client.on_event("response.audio.delta", on_response_audio_delta)
-        self.realtime_client.on_event("response.output_audio.delta", on_response_output_audio_delta)
-        self.realtime_client.on_event("response.output_audio", on_response_output_audio)
+        self.realtime_client.on_event("response.output_audio.delta", on_response_audio_delta)
         self.realtime_client.on_event("response.done", on_response_done)
+        self.realtime_client.on_event(
+            "conversation.item.input_audio_transcription.completed",
+            on_input_transcription,
+        )
         self.realtime_client.on_event("conversation.item.completed", on_conversation_end)
     
-    def _play_response_audio(self):
+    def _play_response_audio(self, generation):
         """Play response audio chunks as they arrive using a continuous stream."""
-        logger.info("Audio playback thread started")
+        logger.info("Audio playback thread started (generation=%s)", generation)
         total_bytes = 0
         chunks_received = 0
         empty_count = 0
-        max_empty_count = 20   # Ultra-short timeout for instant responsiveness (0.1 seconds)
-        
-        # Use a single continuous stream for smoother playback
+        # Before response.done: tolerate long silence (streaming may have network gaps).
+        # After response.done + queue empty: short grace then exit.
+        MAX_EMPTY_BEFORE_DONE = 600   # ~3s at 5ms sleep
+        MAX_EMPTY_AFTER_DONE = 40     # ~200ms at 5ms sleep
+
         import sounddevice as sd
         stream = None
-        
+
         try:
-            # Open a continuous audio stream with larger blocksize for smoother playback
-            # blocksize=4800 = 200ms buffer at 24kHz (reduces jerky playback)
             stream = sd.OutputStream(samplerate=24000, channels=1, dtype='float32', blocksize=4800)
             stream.start()
             logger.info("Audio stream opened and started")
-            
-            # Log initial queue size
+
             initial_queue_size = self.realtime_client.get_queue_size()
             logger.info(f"Initial audio queue size: {initial_queue_size} chunks")
-            
-            # Keep playing until we've drained the queue or stopped
-            # Don't exit just because playing_response is False - wait for queue to drain
-            while not self._stop_playback.is_set() and empty_count < max_empty_count:
-                # Check if we should stop
-                if self._stop_playback.is_set():
-                    logger.info("Playback thread received stop signal")
-                    break
-                
-                # Get audio chunk from Realtime API
+
+            while not self._stop_playback.is_set():
                 queue_size_before = self.realtime_client.get_queue_size()
                 audio_bytes = self.realtime_client.get_response_audio()
                 queue_size_after = self.realtime_client.get_queue_size()
-                
+
                 if audio_bytes:
-                    empty_count = 0  # Reset empty count
+                    empty_count = 0
                     chunks_received += 1
                     total_bytes += len(audio_bytes)
-                    logger.info(f"Audio playback: received chunk {chunks_received} ({len(audio_bytes)} bytes, total: {total_bytes} bytes, queue: {queue_size_before}->{queue_size_after})")
-                    
-                    # Convert to numpy array (PCM16, 24kHz)
+                    logger.info(
+                        "Audio playback: chunk %s (%s bytes, total: %s, queue: %s->%s)",
+                        chunks_received, len(audio_bytes), total_bytes,
+                        queue_size_before, queue_size_after,
+                    )
+
                     audio_array = np.frombuffer(audio_bytes, dtype=np.int16).astype(np.float32) / 32767.0
-                    
-                    # Write to stream (non-blocking)
                     try:
                         if not self._stop_playback.is_set():
                             stream.write(audio_array.reshape(-1, 1))
@@ -311,32 +515,27 @@ class RealtimePipeline:
                 else:
                     empty_count += 1
                     queue_size = self.realtime_client.get_queue_size()
-                    
-                    # Log first few empty reads to debug
-                    if empty_count <= 5 or empty_count % 20 == 0:
-                        logger.info(f"Empty read {empty_count}/{max_empty_count}, queue size: {queue_size}, playing_response: {self.playing_response}, stop_playback: {self._stop_playback.is_set()}")
-                    
-                    # If queue has items but we're getting None, something is wrong
-                    if queue_size > 0 and empty_count > 5:
-                        logger.warning(f"Queue has {queue_size} chunks but get_response_audio() returned None! This shouldn't happen.")
-                    
-                    # INSTANT EXIT: As soon as response is done and queue is empty, exit immediately
-                    if not self.playing_response and queue_size == 0:
-                        logger.info(f"Response done, queue empty - exiting INSTANTLY (zero delay)")
+                    done = self._response_done.is_set()
+
+                    if empty_count <= 5 or empty_count % 50 == 0:
+                        logger.info(
+                            "Empty read %s, queue: %s, response_done: %s",
+                            empty_count, queue_size, done,
+                        )
+
+                    if done and queue_size == 0 and empty_count >= MAX_EMPTY_AFTER_DONE:
+                        logger.info("Response done, queue drained -- exiting playback loop")
                         break
-                    
-                    # Conservative fallback: If response is done, wait a bit longer to avoid truncation
-                    if not self.playing_response and empty_count >= 10:  # 50ms instead of 20ms
-                        logger.info(f"Response done, waited {empty_count} reads - exiting conservatively")
+
+                    if not done and empty_count >= MAX_EMPTY_BEFORE_DONE:
+                        logger.warning("No audio for %s reads before response.done -- exiting", empty_count)
                         break
-                    
-                    # Shorter delay for faster responsiveness
-                    time.sleep(0.005)  # 5ms instead of 10ms
-            
+
+                    time.sleep(0.005)
+
         except Exception as e:
             logger.error(f"Error in audio playback thread: {e}", exc_info=True)
         finally:
-            # Clean up stream
             if stream is not None:
                 try:
                     stream.stop()
@@ -344,16 +543,24 @@ class RealtimePipeline:
                     logger.info("Audio stream closed")
                 except:
                     pass
-            
-            # CRITICAL: Mark playback as finished and transition to LISTENING
-            self.playing_response = False
-            if self.realtime_session_active:
-                logger.info("STATE: TALKING → LISTENING (playback finished)")
-                self.state_manager.set_state(RobotState.LISTENING)
-                if self.ui_enabled:
-                    self.web_ui_server.emit_state_update(RobotState.LISTENING)
-        
-        logger.info(f"Audio playback thread finished (total: {chunks_received} chunks, {total_bytes} bytes)")
+
+            if generation == self._playback_generation:
+                self.playing_response = False
+                self._response_done.clear()
+                if self.realtime_session_active:
+                    logger.info("STATE: TALKING → LISTENING (playback finished)")
+                    self._set_state(RobotState.LISTENING)
+            else:
+                logger.info(
+                    "Skipping state transition from stale playback thread "
+                    "(generation=%s, current=%s)",
+                    generation, self._playback_generation,
+                )
+
+        logger.info(
+            "Audio playback thread finished (generation=%s, total: %s chunks, %s bytes)",
+            generation, chunks_received, total_bytes,
+        )
     
     def _close_session(self):
         """Close Realtime API session and return to READY state."""
@@ -363,18 +570,13 @@ class RealtimePipeline:
             self.last_interaction_time = None
             self.playing_response = False
             
-            self.state_manager.set_state(RobotState.READY)
-            if self.ui_enabled:
-                self.web_ui_server.emit_state_update(RobotState.READY)
+            self._set_state(RobotState.READY)
             
             logger.info("Realtime API session closed")
     
     def run(self):
         """Run the main pipeline loop."""
-        # Set initial state to READY
-        self.state_manager.set_state(RobotState.READY)
-        if self.ui_enabled:
-            self.web_ui_server.emit_state_update(RobotState.READY)
+        self._set_state(RobotState.READY)
         
         logger.info("Robot pipeline started - waiting for voice activity...")
         
@@ -387,28 +589,28 @@ class RealtimePipeline:
                     logger.info(f"Session timeout after {time_since_last:.1f}s - closing session")
                     self._close_session()
             
-            # CRITICAL: Don't send audio to Realtime API while robot is speaking
-            # This prevents feedback loop where robot's own voice triggers new responses
+            # CRITICAL: Don't send audio while TALKING or THINKING.
+            # TALKING: prevents feedback loop from robot's own voice.
+            # THINKING: prevents overlapping turns that destabilize state ordering.
             current_state = self.state_manager.get_state()
-            if current_state == RobotState.TALKING:
-                # Robot is speaking - mute microphone input to prevent feedback
+            if current_state in (RobotState.TALKING, RobotState.THINKING):
                 continue
             
             # Local VAD detection (cost gate)
             if self.vad.is_speech(chunk):
                 logger.debug("VAD: Speech detected")
-                # Speech detected - trigger event handler which will activate Realtime API if needed
                 if not self.realtime_session_active:
                     logger.info("VAD: Activating Realtime API session...")
-                    # Simulate speech_started event to activate session
                     self.realtime_client.event_handlers.get("input_audio_buffer.speech_started", lambda x: None)({})
                 
-                # Send audio to Realtime API if session is active
                 if self.realtime_session_active:
                     self.realtime_client.send_audio(chunk, sample_rate=self.mic.rate)
                     logger.debug("VAD: Audio chunk sent to Realtime API (speech)")
+
+                # Feed speech chunks to speaker identifier
+                if self.speaker_identifier:
+                    self.speaker_identifier.feed(chunk)
             else:
-                # No speech - if session is active, still send audio (Realtime API handles VAD)
                 if self.realtime_session_active:
                     self.realtime_client.send_audio(chunk, sample_rate=self.mic.rate)
                     logger.debug("VAD: Audio chunk sent to Realtime API (silence)")

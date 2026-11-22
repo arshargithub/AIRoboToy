@@ -1,0 +1,85 @@
+{
+  "api_url": "https://api.github.com/repos/k2-fsa/sherpa-onnx/releases/tags/speaker-recongition-models",
+  "tag": "speaker-recongition-models",
+  "published_at": "2023-12-08T10:06:08Z",
+  "assets": [
+    {
+      "name": "3dspeaker_speech_campplus_sv_en_voxceleb_16k.onnx",
+      "size": 29596978,
+      "digest": null,
+      "browser_download_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/3dspeaker_speech_campplus_sv_en_voxceleb_16k.onnx"
+    },
+    {
+      "name": "3dspeaker_speech_campplus_sv_zh_en_16k-common_advanced.onnx",
+      "size": 28281164,
+      "digest": null,
+      "browser_download_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/3dspeaker_speech_campplus_sv_zh_en_16k-common_advanced.onnx"
+    },
+    {
+      "name": "3dspeaker_speech_eres2net_sv_en_voxceleb_16k.onnx",
+      "size": 26485263,
+      "digest": null,
+      "browser_download_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/3dspeaker_speech_eres2net_sv_en_voxceleb_16k.onnx"
+    },
+    {
+      "name": "nemo_en_speakerverification_speakernet.onnx",
+      "size": 23411863,
+      "digest": null,
+      "browser_download_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/nemo_en_speakerverification_speakernet.onnx"
+    },
+    {
+      "name": "nemo_en_titanet_large.onnx",
+      "size": 101405493,
+      "digest": null,
+      "browser_download_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/nemo_en_titanet_large.onnx"
+    },
+    {
+      "name": "nemo_en_titanet_small.onnx",
+      "size": 40257283,
+      "digest": null,
+      "browser_download_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/nemo_en_titanet_small.onnx"
+    },
+    {
+      "name": "wespeaker_en_voxceleb_CAM++.onnx",
+      "size": 29292684,
+      "digest": null,
+      "browser_download_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/wespeaker_en_voxceleb_CAM%2B%2B.onnx"
+    },
+    {
+      "name": "wespeaker_en_voxceleb_CAM++_LM.onnx",
+      "size": 29292687,
+      "digest": null,
+      "browser_download_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/wespeaker_en_voxceleb_CAM%2B%2B_LM.onnx"
+    },
+    {
+      "name": "wespeaker_en_voxceleb_resnet152_LM.onnx",
+      "size": 79158470,
+      "digest": null,
+      "browser_download_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/wespeaker_en_voxceleb_resnet152_LM.onnx"
+    },
+    {
+      "name": "wespeaker_en_voxceleb_resnet221_LM.onnx",
+      "size": 95037599,
+      "digest": null,
+      "browser_download_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/wespeaker_en_voxceleb_resnet221_LM.onnx"
+    },
+    {
+      "name": "wespeaker_en_voxceleb_resnet293_LM.onnx",
+      "size": 114336527,
+      "digest": null,
+      "browser_download_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/wespeaker_en_voxceleb_resnet293_LM.onnx"
+    },
+    {
+      "name": "wespeaker_en_voxceleb_resnet34.onnx",
+      "size": 26534365,
+      "digest": null,
+      "browser_download_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/wespeaker_en_voxceleb_resnet34.onnx"
+    },
+    {
+      "name": "wespeaker_en_voxceleb_resnet34_LM.onnx",
+      "size": 26530550,
+      "digest": null,
+      "browser_download_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/wespeaker_en_voxceleb_resnet34_LM.onnx"
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "id": "paprika-voice-texture-v1",
+  "kind": "paprika_voice_character_check",
+  "display_order": [
+    "C",
+    "F",
+    "G"
+  ],
+  "voices": {
+    "C": "Original C \u00b7 Kokoro af_heart",
+    "F": "90% af_heart + 10% af_nicole",
+    "G": "80% af_heart + 20% af_nicole"
+  },
+  "passages": {
+    "short_story": "Fox story",
+    "greeting": "Hello from Paprika"
+  },
+  "reference_feedback": {
+    "voice": "C",
+    "source": "user chat",
+    "best_so_far": true,
+    "accepted": false,
+    "requested_change": "A little teenage-style raspiness / husky texture"
+  },
+  "method": "Linear interpolation of installed public voice style embeddings; no DSP distortion or pitch shift. Texture/age not guaranteed.",
+  "source_voices_sha256": "1c5a5b983d3d50d8586d437a51f3faa2da7919ce76a013c081e65671a3447c29",
+  "derived_voices_sha256": "90bfa31698d2d4b70363de6cdb9c0a5f0d726197dd0ca7fc29973ac79563b152",
+  "trials": [
+    {
+      "id": "texture-1",
+      "voice": "C",
+      "case": "short_story",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "src": "/voice-texture/sample-1.wav",
+      "sha256": "e59acd81cb39e4b0ff66c62260c0eabd9e301844ae7a6d263db9acf054fa524d",
+      "gain": 1,
+      "original_reference_unchanged": true,
+      "preparation_ms": 0.8811250154394656
+    },
+    {
+      "id": "texture-2",
+      "voice": "C",
+      "case": "greeting",
+      "text": "Hi, I'm Paprika. What should we explore today? I think we can handle a little adventure.",
+      "src": "/voice-texture/sample-2.wav",
+      "sha256": "6befad09c2b348dbc0b14f9ecca35bc020e7bafd1c24b3a4bb8a4e6cdba1a187",
+      "gain": 1,
+      "original_reference_unchanged": true,
+      "preparation_ms": 0.8666659996379167
+    },
+    {
+      "id": "texture-3",
+      "voice": "F",
+      "case": "short_story",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "src": "/voice-texture/sample-3.wav",
+      "sha256": "4e6b2fa50b5ade512c942d2175ef0ebed08765f4cdbefd61334c456c329e138a",
+      "gain": 1.5040924432636757,
+      "original_reference_unchanged": false,
+      "preparation_ms": 4494.508333009435
+    },
+    {
+      "id": "texture-4",
+      "voice": "F",
+      "case": "greeting",
+      "text": "Hi, I'm Paprika. What should we explore today? I think we can handle a little adventure.",
+      "src": "/voice-texture/sample-4.wav",
+      "sha256": "3607c55b0faa67a71a703b20d020e440865fba101f8d98244d481f8fe9dbc867",
+      "gain": 1.622388389799109,
+      "original_reference_unchanged": false,
+      "preparation_ms": 3555.4159580206033
+    },
+    {
+      "id": "texture-5",
+      "voice": "G",
+      "case": "short_story",
+      "text": "A tiny fox found a silver key. It opened a door inside an old oak tree, where a sleepy owl was baking star-shaped cookies.",
+      "src": "/voice-texture/sample-5.wav",
+      "sha256": "a38d4008218a4dbac12ce1fa751c0fc6fc57e24aaa52bc99b99105084ae6ec4a",
+      "gain": 1.5113447407553817,
+      "original_reference_unchanged": false,
+      "preparation_ms": 4637.244291981915
+    },
+    {
+      "id": "texture-6",
+      "voice": "G",
+      "case": "greeting",
+      "text": "Hi, I'm Paprika. What should we explore today? I think we can handle a little adventure.",
+      "src": "/voice-texture/sample-6.wav",
+      "sha256": "b39a4209ab30df8247deb56d1725a71845a0c599e87c16840122bbbb45046c0e",
+      "gain": 1.6104888349276478,
+      "original_reference_unchanged": false,
+      "preparation_ms": 3440.34008399467
+    }
+  ],
+  "api_spend_usd": 0,
+  "microphone_used": false
+}

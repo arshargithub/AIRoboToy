@@ -44,6 +44,10 @@ class RealtimeAPIClient:
         self._audio_thread = None
         self._response_thread = None
         self._running = False
+        # Track which audio event stream is canonical per response_id.
+        # Realtime can emit both response.audio.delta and response.output_audio.delta.
+        # If we ingest both, response_audio_queue can balloon with duplicates.
+        self._response_audio_mode: Dict[str, str] = {}
         
     def connect(self):
         """Establish Realtime API WebSocket session."""
@@ -100,11 +104,12 @@ class RealtimeAPIClient:
                 "modalities": ["audio", "text"],
                 "instructions": self._get_system_instructions(),
                 "voice": self.voice,
+                "input_audio_transcription": {"model": "whisper-1"},
                 "turn_detection": {
                     "type": "server_vad",
                     "threshold": 0.6,
                     "prefix_padding_ms": 300,
-                    "silence_duration_ms": 500
+                    "silence_duration_ms": 1200
                 },
                 "temperature": 0.7,
                 "max_response_output_tokens": 4096
@@ -165,18 +170,67 @@ class RealtimeAPIClient:
         
         logger.info("Realtime API session disconnected")
     
-    def _get_system_instructions(self) -> str:
-        """Get system instructions for the LLM."""
-        return """You are Johnny Hugenschmidt, a helpful and friendly robot who talks to children ages 6-9. Your name is 'Johnny Hugenschmidt' and you respond to 'Johnny', 'Hugenschmidt', or 'Johnny Hugenschmidt'. 
+    def _get_system_instructions(
+        self,
+        speaker_name: Optional[str] = None,
+        memories: Optional[str] = None,
+    ) -> str:
+        """Build system instructions, optionally personalised with speaker context."""
+        base = (
+            "You are Johnny Hugenschmidt, a helpful and friendly robot who talks "
+            "to children ages 6-9. Your name is 'Johnny Hugenschmidt' and you "
+            "respond to 'Johnny', 'Hugenschmidt', or 'Johnny Hugenschmidt'.\n\n"
+            "You are talking to a child between 6-9 years old, so use simple "
+            "words, short sentences, and be enthusiastic and friendly. Be "
+            "encouraging, age-appropriate, and engaging. Keep your responses "
+            "concise but complete - aim for 2-4 sentences unless more detail is "
+            "needed. Always finish your thoughts completely and never cut off "
+            "mid-sentence.\n\n"
+            "You can respond when:\n"
+            "- Directly addressed: \"Hey Johnny\", \"Johnny\", \"Johnny Hugenschmidt\", etc.\n"
+            "- Referenced indirectly: \"I wonder what Johnny thinks\", \"Johnny would love this\", etc.\n"
+            "- Contextually appropriate: Someone seems to be talking to/about you "
+            "in a way that suggests you should respond\n\n"
+            "Use your judgment to determine if a response would be natural and "
+            "helpful. Don't respond to general conversation that doesn't involve "
+            "you at all. Be moderately responsive - chime in when it's clearly "
+            "relevant, but don't interrupt every conversation."
+        )
 
-You are talking to a child between 6-9 years old, so use simple words, short sentences, and be enthusiastic and friendly. Be encouraging, age-appropriate, and engaging. Keep your responses concise but complete - aim for 2-4 sentences unless more detail is needed. Always finish your thoughts completely and never cut off mid-sentence.
+        if speaker_name and speaker_name != "unknown":
+            base += (
+                f"\n\nYou are currently talking to {speaker_name.title()}. "
+                f"Address them by name occasionally to make the conversation personal."
+            )
 
-You can respond when:
-- Directly addressed: "Hey Johnny", "Johnny", "Johnny Hugenschmidt", etc.
-- Referenced indirectly: "I wonder what Johnny thinks", "Johnny would love this", etc.
-- Contextually appropriate: Someone seems to be talking to/about you in a way that suggests you should respond
+        if memories:
+            base += (
+                "\n\nHere are things you remember from previous conversations:\n"
+                f"{memories}\n\n"
+                "Use these memories naturally in conversation. Don't repeat them "
+                "verbatim or quiz the child. Let them come up organically when "
+                "relevant."
+            )
 
-Use your judgment to determine if a response would be natural and helpful. Don't respond to general conversation that doesn't involve you at all. Be moderately responsive - chime in when it's clearly relevant, but don't interrupt every conversation."""
+        return base
+
+    def update_session(
+        self,
+        speaker_name: Optional[str] = None,
+        memories: Optional[str] = None,
+    ) -> None:
+        """Send a mid-conversation session.update with enriched instructions."""
+        instructions = self._get_system_instructions(speaker_name, memories)
+        event = {
+            "type": "session.update",
+            "session": {"instructions": instructions},
+        }
+        logger.info(
+            "Updating session instructions (speaker=%s, has_memories=%s)",
+            speaker_name,
+            bool(memories),
+        )
+        self._send_event(event)
     
     def send_audio(self, audio_chunk: np.ndarray, sample_rate: int = 16000):
         """
@@ -267,6 +321,7 @@ Use your judgment to determine if a response would be natural and helpful. Don't
     def _handle_event(self, event: Dict[str, Any]):
         """Handle incoming event from Realtime API."""
         event_type = event.get("type", "")
+        response_id = event.get("response_id")
         
         # Log events without verbose data (especially audio base64 strings)
         if "audio" in event_type.lower() and "delta" in event_type.lower():
@@ -282,9 +337,37 @@ Use your judgment to determine if a response would be natural and helpful. Don't
             # For other events, log type and key fields only
             logger.debug(f"Realtime API event: {event_type}")
         
+        def _should_ingest_audio_delta() -> bool:
+            """
+            Decide whether to ingest this audio delta event.
+            Prefer response.output_audio.delta when both streams are present.
+            """
+            if not response_id:
+                # No response id; ingest conservatively.
+                return True
+            mode = self._response_audio_mode.get(response_id)
+            if event_type == "response.output_audio.delta":
+                # output_audio.delta is canonical; stick to it.
+                self._response_audio_mode[response_id] = "output_audio"
+                return True
+            if event_type == "response.audio.delta":
+                # If canonical stream already selected, skip fallback duplicates.
+                if mode == "output_audio":
+                    logger.debug(
+                        "Skipping response.audio.delta because output_audio.delta is active "
+                        "for response_id=%s",
+                        response_id,
+                    )
+                    return False
+                # Otherwise use audio.delta for this response.
+                self._response_audio_mode[response_id] = "audio"
+                return True
+            return False
+
         # Handle audio response - check multiple possible event types
-        # The actual event type is "response.output_audio.delta" not "response.audio.delta"
         if event_type in ["response.audio.delta", "response.output_audio.delta"]:
+            if not _should_ingest_audio_delta():
+                return
             audio_base64 = event.get("delta", "")
             if audio_base64:
                 try:
@@ -298,15 +381,25 @@ Use your judgment to determine if a response would be natural and helpful. Don't
         
         # Also check for response.output_audio event type (without .delta suffix)
         elif event_type == "response.output_audio":
+            # Non-delta output_audio is treated as fallback only.
+            # If delta stream already selected for this response, skip to avoid duplicates.
+            if response_id and response_id in self._response_audio_mode:
+                logger.debug(
+                    "Skipping response.output_audio fallback because delta stream is active "
+                    "for response_id=%s",
+                    response_id,
+                )
             # Check both "audio" and "delta" fields
             audio_data = event.get("audio", "") or event.get("delta", "")
-            if audio_data:
+            if audio_data and (not response_id or response_id not in self._response_audio_mode):
                 try:
                     # Audio might be base64 encoded or raw bytes
                     if isinstance(audio_data, str):
                         audio_bytes = base64.b64decode(audio_data)
                     else:
                         audio_bytes = audio_data
+                    if response_id:
+                        self._response_audio_mode[response_id] = "output_audio"
                     self.response_audio_queue.put_nowait(audio_bytes)
                     logger.debug(f"Output audio decoded: {len(audio_bytes)} bytes queued")
                 except Exception as e:
@@ -325,6 +418,9 @@ Use your judgment to determine if a response would be natural and helpful. Don't
         # Check response.done for audio data
         elif event_type == "response.done":
             response = event.get("response", {})
+            done_response_id = response.get("id")
+            if done_response_id and done_response_id in self._response_audio_mode:
+                self._response_audio_mode.pop(done_response_id, None)
             output = response.get("output", [])
             for item in output:
                 if item.get("type") == "message":
@@ -345,8 +441,12 @@ Use your judgment to determine if a response would be natural and helpful. Don't
             logger.debug(f"No handler registered for event: {event_type}")
         
         # Also handle parent event types (e.g., "response.audio" for "response.audio.delta")
+        # NOTE: Skip parent dispatch for response.output_audio.delta because many callers
+        # register both "response.output_audio.delta" and "response.output_audio";
+        # dispatching both causes duplicate audio/state handling.
         parent_type = ".".join(event_type.split(".")[:-1])
-        if parent_type and parent_type in self.event_handlers:
+        skip_parent_dispatch = event_type == "response.output_audio.delta"
+        if parent_type and parent_type in self.event_handlers and not skip_parent_dispatch:
             try:
                 logger.debug(f"Calling parent handler for event: {parent_type}")
                 self.event_handlers[parent_type](event)

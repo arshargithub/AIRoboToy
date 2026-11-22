@@ -1,0 +1,260 @@
+{
+  "protocol_id": "tavi-paprika-whisper-v1",
+  "schema_version": 1,
+  "names": [
+    "tavi",
+    "paprika"
+  ],
+  "kind": "tavi_private_name_comparison",
+  "clip_ms": 4000,
+  "gap_ms": 3000,
+  "max_frames": 150,
+  "minimum_frames": 110,
+  "prompts": [
+    "Names: Tavi, Paprika.",
+    null,
+    "Names: Paprika, Tavi."
+  ],
+  "model_source": "Systran/faster-whisper-tiny.en",
+  "model_files": {
+    "model.bin": "1a5afae06a4db91c975c9a9d78be5cc110ee4ea022ad57d55492e4550e936b2a",
+    "config.json": "14b1b421a90349bc551b881461426b561a874049cb9e4c4864f2ca384f6a7cc5",
+    "tokenizer.json": "929c5252409436dce1b38a75d1abbcb5e132d170d8e324e4e04ed915fa2d22df",
+    "vocabulary.txt": "ff77588746d3a2595d32ab5b69ffd7b95ce2441ac57533cb66fc3eb575a115cf"
+  },
+  "asr": {
+    "language": "en",
+    "beam_size": 1,
+    "temperature": 0,
+    "condition_on_previous_text": false,
+    "vad_filter": false
+  },
+  "trials": [
+    {
+      "phrase": "Tavi",
+      "target": "tavi",
+      "category": "name_alone",
+      "number": 1,
+      "label": "positive"
+    },
+    {
+      "phrase": "Paprika",
+      "target": "paprika",
+      "category": "name_alone",
+      "number": 2,
+      "label": "positive"
+    },
+    {
+      "phrase": "TV",
+      "target": null,
+      "category": "confusable",
+      "number": 3,
+      "label": "negative"
+    },
+    {
+      "phrase": "Patrick",
+      "target": null,
+      "category": "confusable",
+      "number": 4,
+      "label": "negative"
+    },
+    {
+      "phrase": "Paprika, tell me a story.",
+      "target": "paprika",
+      "category": "request",
+      "number": 5,
+      "label": "positive"
+    },
+    {
+      "phrase": "Tavi, tell me a story.",
+      "target": "tavi",
+      "category": "request",
+      "number": 6,
+      "label": "positive"
+    },
+    {
+      "phrase": "coffee",
+      "target": null,
+      "category": "confusable",
+      "number": 7,
+      "label": "negative"
+    },
+    {
+      "phrase": "paper clip",
+      "target": null,
+      "category": "confusable",
+      "number": 8,
+      "label": "negative"
+    },
+    {
+      "phrase": "Tavi",
+      "target": "tavi",
+      "category": "name_alone",
+      "number": 9,
+      "label": "positive"
+    },
+    {
+      "phrase": "Paprika",
+      "target": "paprika",
+      "category": "name_alone",
+      "number": 10,
+      "label": "positive"
+    },
+    {
+      "phrase": "Taffy",
+      "target": null,
+      "category": "confusable",
+      "number": 11,
+      "label": "negative"
+    },
+    {
+      "phrase": "parakeet",
+      "target": null,
+      "category": "confusable",
+      "number": 12,
+      "label": "negative"
+    },
+    {
+      "phrase": "Paprika, what can we play?",
+      "target": "paprika",
+      "category": "request",
+      "number": 13,
+      "label": "positive"
+    },
+    {
+      "phrase": "Tavi, what can we play?",
+      "target": "tavi",
+      "category": "request",
+      "number": 14,
+      "label": "positive"
+    },
+    {
+      "phrase": "Toby",
+      "target": null,
+      "category": "confusable",
+      "number": 15,
+      "label": "negative"
+    },
+    {
+      "phrase": "Patricia",
+      "target": null,
+      "category": "confusable",
+      "number": 16,
+      "label": "negative"
+    },
+    {
+      "phrase": "Tavi, are you there?",
+      "target": "tavi",
+      "category": "request",
+      "number": 17,
+      "label": "positive"
+    },
+    {
+      "phrase": "Paprika, are you there?",
+      "target": "paprika",
+      "category": "request",
+      "number": 18,
+      "label": "positive"
+    },
+    {
+      "phrase": "that view",
+      "target": null,
+      "category": "confusable",
+      "number": 19,
+      "label": "negative"
+    },
+    {
+      "phrase": "paper cup",
+      "target": null,
+      "category": "confusable",
+      "number": 20,
+      "label": "negative"
+    },
+    {
+      "phrase": "Paprika",
+      "target": "paprika",
+      "category": "name_alone",
+      "number": 21,
+      "label": "positive"
+    },
+    {
+      "phrase": "Tavi",
+      "target": "tavi",
+      "category": "name_alone",
+      "number": 22,
+      "label": "positive"
+    },
+    {
+      "phrase": "The tabby cat",
+      "target": null,
+      "category": "confusable",
+      "number": 23,
+      "label": "negative"
+    },
+    {
+      "phrase": "Pass me the crackers",
+      "target": null,
+      "category": "confusable",
+      "number": 24,
+      "label": "negative"
+    },
+    {
+      "phrase": "Tavi, what is your favorite animal?",
+      "target": "tavi",
+      "category": "request",
+      "number": 25,
+      "label": "positive"
+    },
+    {
+      "phrase": "Paprika, what is your favorite animal?",
+      "target": "paprika",
+      "category": "request",
+      "number": 26,
+      "label": "positive"
+    },
+    {
+      "phrase": "I heard someone say Tavi.",
+      "target": null,
+      "category": "mention",
+      "number": 27,
+      "label": "negative"
+    },
+    {
+      "phrase": "I heard someone say Paprika.",
+      "target": null,
+      "category": "mention",
+      "number": 28,
+      "label": "negative"
+    },
+    {
+      "phrase": "Paprika",
+      "target": "paprika",
+      "category": "name_alone",
+      "number": 29,
+      "label": "positive"
+    },
+    {
+      "phrase": "Tavi",
+      "target": "tavi",
+      "category": "name_alone",
+      "number": 30,
+      "label": "positive"
+    },
+    {
+      "phrase": "Tavi is the toy\u2019s name.",
+      "target": null,
+      "category": "mention",
+      "number": 31,
+      "label": "negative"
+    },
+    {
+      "phrase": "Paprika goes in the soup.",
+      "target": null,
+      "category": "mention",
+      "number": 32,
+      "label": "negative"
+    }
+  ],
+  "break_after": 16,
+  "matching": "case_insensitive_whole_word_anywhere"
+}
